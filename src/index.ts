@@ -1,3 +1,4 @@
+import { Query } from "./../node_modules/@types/express-serve-static-core/index.d";
 import express, { Request, Response, NextFunction } from "express";
 import { ICongigs } from "./interfaces/IConfigs";
 import Joi from "joi";
@@ -28,11 +29,27 @@ const validate = (schema: Joi.ObjectSchema) => {
 };
 
 app.post(
+  "/getInfoStore",
+  validate(
+    Joi.object({
+      id_store: Joi.number().strict().required(),
+    })
+  ),
+  async (req: Request, res: Response) => {
+    const { id_store } = req.body;
+
+    const { data } = await Axios.get(
+      `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${id_store}/`
+    );
+
+    res.json(data);
+  }
+);
+
+app.post(
   "/getAllStoreProductOffers",
   validate(storeSchema),
   async (req: Request, res: Response) => {
-    console.log(req.body);
-
     const base_url =
       "https://services.rappi.com.br/api/web-gateway/web/dynamic/context/content/";
 
@@ -66,6 +83,48 @@ app.post(
 
     const allProductsClean = _.uniqBy(allProducts, "id");
     res.json({ allProductsClean });
+  }
+);
+
+app.post(
+  "/globalSearchProducts",
+  validate(
+    Joi.object({
+      query: Joi.string().strict().required(),
+    })
+  ),
+  async (req: Request, res: Response) => {
+    const { query } = req.body;
+
+    const priorityOrder = [
+      900604367, 900542505, 900156624, 900536162, 900020818, 900631973,
+    ];
+
+    const base_url = `https://services.rappi.com.br/api/pns-global-search-api/v1/unified-search?is_prime=true&unlimited_shipping=true`;
+
+    const getGlobalProducts = await Axios.post(base_url, {
+      params: { is_prime: true, unlimited_shipping: true },
+      tiered_stores: [],
+      lat: -23.5717729,
+      lng: -46.730492,
+      query: query,
+      options: {},
+    });
+
+    getGlobalProducts.data.stores.sort((a: any, b: any) => {
+      const priorityA = priorityOrder.indexOf(a.store_id);
+      const priorityB = priorityOrder.indexOf(b.store_id);
+
+      return (
+        (priorityA === -1 ? Infinity : priorityA) -
+        (priorityB === -1 ? Infinity : priorityB)
+      );
+    });
+
+
+    res.json(getGlobalProducts.data.stores);
+
+    // return getGlobalProducts.data.stores;
   }
 );
 
