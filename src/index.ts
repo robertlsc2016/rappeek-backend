@@ -17,6 +17,6 @@ runCronJobs();
 
 app.use("/store", storeRouter);
 
-app.listen(PORT, () => {
-  console.log(`Server is running!`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`API rodando na porta ${PORT}!`);
 });
