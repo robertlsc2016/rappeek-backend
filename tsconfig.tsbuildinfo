@@ -1,1 +1,1 @@
-{"root":["./src/index.ts"],"version":"5.7.2"}
+{"root":["./src/createdatabase.ts","./src/index.ts","./src/axios/axiosinstance.ts","./src/crons/test-cron.ts","./src/database/mock_data_markets.ts","./src/interfaces/iconfigs.ts","./src/interfaces/iproduct.ts","./src/schemas/storesschema.ts"],"version":"5.7.2"}
