@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import { router as storeRouter } from "./Routes/storeRoutes";
 import { StoreService } from "./services/storeService";
-import { getFistProductsDay } from "./utils/getFirstProductsDay";
 import runCronJobs from "./crons/test-cron";
 
 const app = express();
