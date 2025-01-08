@@ -18,7 +18,6 @@ const headers = {
   // "access-control-allow-origin": "*",
   "app-version": "web_v1.216.6",
   // authorization:
-  //   "Bearer ft.gAAAAABndDqAEHOE704kaXtzyIPtWiwNWU5o3ElIz9K1WAOq5pjSwRQibBhCn9wnEkhOwJL2eumA0TBdl_oyGFq_gVHy1x1K56CvvSq6qYsG9_pewR4VgPud4jZdL3nfPtUPBqGIPzDJ7tG_c_ps0-EKU9SEc_6Gu6RVcPp1SaVA2xUsCjIPIKFl3gGAYuhQyJWuQOOYhYzIJCWa4YiPjfvWNijydbWhOL_IGoVnQyfx2kJYoKSTBtOzykiEq_3-lxu-KagAxqixaJoPMTEzlaiPgXKPa8e0F2PK0btvL2yxQOtyeSrcRj-yEFTUllpsVAUz2W14VEmAYTenu-WyoWFiie-LngMpo58HpCSjgjPjna0rp6l1_RA-RUoY2nk-1wh6-OTltc8tJZHyp-P5iNnpsyLljULS-A==",
   // "content-type": "application/json",
   // deviceid: "3577be35-6122-430f-9f9d-4e5d7cdfc166",
   // include_context_info: "true",
