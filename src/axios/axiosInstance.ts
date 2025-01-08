@@ -7,7 +7,6 @@ const headers = {
   "access-control-allow-headers": "*",
   "access-control-allow-origin": "*",
   // 'app-version': '1.149.4',
-  auth_user: "3927881100",
   authorization: process.env.AUTHORIZATION,
 
   // origin: "https://www.rappi.com.br",
