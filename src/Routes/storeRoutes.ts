@@ -1,5 +1,5 @@
 // routes/userRoutes.ts
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, response } from "express";
 
 import { validate } from "../middlewares/validateMiddleware";
 import Joi from "joi";
@@ -10,6 +10,10 @@ const router = Router();
 
 const userValidationSchema = Joi.object({
   id_store: Joi.number().strict().required(),
+});
+
+router.get("/", (req, res) => {
+  res.status(200).json("hello world")
 });
 
 router.post(
@@ -38,7 +42,10 @@ router.post("/getNewProductsStore", storeController.getNewProductsStore);
 
 router.get("/getAllProductsDay", storeController.registerAllProductsDay);
 
-router.get("/getAllProductsDayByIdStore/:id_store", storeController.getAllProductsDayByIdStore);
+router.get(
+  "/getAllProductsDayByIdStore/:id_store",
+  storeController.getAllProductsDayByIdStore
+);
 
 router.get("/getStores", storeController.getStores);
 
