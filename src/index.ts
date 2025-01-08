@@ -5,7 +5,7 @@ import { StoreService } from "./services/storeService";
 import runCronJobs from "./crons/test-cron";
 
 const app = express();
-const PORT = 4000;
+const PORT = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
