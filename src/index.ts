@@ -22,21 +22,19 @@ app.use("/store", storeRouter);
 
 if (os.platform() == "linux") {
   const sslOptions = {
-    key: fs.readFileSync(path.join(__dirname, "selfsigned.key")),
-    cert: fs.readFileSync(path.join(__dirname, "selfsigned.crt")),
+    key: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "code.key")),
+    cert: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "code.crt")),
   };
 
-  if (os.platform() == "linux") {
-    https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () => {
-      console.log(
-        `Servidor HTTPS rodando em https://${process.env.PUBLIC_IP}:${PORT}`
-      );
-    });
-  }
+  https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () => {
+    console.log(
+      `Servidor HTTPS rodando em https://${process.env.PUBLIC_IP}:${PORT}`
+    );
+  });
 }
 
 if (os.platform() == "win32") {
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`API rodando na porta ${PORT}!`);
+    console.log(`API rodando na porta http://localhost:${PORT}`);
   });
 }

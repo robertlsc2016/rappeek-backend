@@ -4,3 +4,7 @@ dist
 *.sqlite
 *.db
 *.env
+
+*.crt
+*.csr
+*.key
