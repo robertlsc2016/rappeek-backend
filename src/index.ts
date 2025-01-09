@@ -3,6 +3,10 @@ import cors from "cors";
 import { router as storeRouter } from "./Routes/storeRoutes";
 import { StoreService } from "./services/storeService";
 import runCronJobs from "./crons/test-cron";
+import https from "https";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 const app = express();
 const PORT = 3000;
@@ -16,6 +20,23 @@ runCronJobs();
 
 app.use("/store", storeRouter);
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`API rodando na porta ${PORT}!`);
-});
+if (os.platform() == "linux") {
+  const sslOptions = {
+    key: fs.readFileSync(path.join(__dirname, "selfsigned.key")),
+    cert: fs.readFileSync(path.join(__dirname, "selfsigned.crt")),
+  };
+
+  if (os.platform() == "linux") {
+    https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () => {
+      console.log(
+        `Servidor HTTPS rodando em https://${process.env.PUBLIC_IP}:${PORT}`
+      );
+    });
+  }
+}
+
+if (os.platform() == "win32") {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`API rodando na porta ${PORT}!`);
+  });
+}
