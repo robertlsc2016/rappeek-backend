@@ -24,7 +24,7 @@ if (os.platform() == "linux") {
   const sslOptions = {
     key: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "privkey1.pem")),
     cert: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "cert1.pem")),
-    ca: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "fullchain1.pem")),
+    ca: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "chain1.pem")),
   };
 
   https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () => {
