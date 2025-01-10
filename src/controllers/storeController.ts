@@ -84,6 +84,15 @@ export class storeController {
     }
   }
 
+  static async clearDataBase(req: Request, res: Response) {
+    try {
+      const status = await StoreService.clearDataBase();
+      res.status(200).json("success");
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
   static async addStores(req: Request, res: Response) {
     try {
       const markets = await StoreService.addStores();

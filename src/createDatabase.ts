@@ -9,9 +9,9 @@ const db = new Database(dbPath);
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS stores (
+    id_store INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     route TEXT NOT NULL,
-    id_store INTEGER PRIMARY KEY,
     parent_store_type TEXT NOT NULL,
     store_type TEXT NOT NULL,
     type TEXT NOT NULL,
@@ -22,27 +22,25 @@ db.exec(`
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS firstProductsDay (
+  id_store INTEGER NOT NULL PRIMARY KEY,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  id_store INTEGER NOT NULL PRIMARY KEY,  -- Esta coluna deve ser a chave primária
   array_products_string TEXT NOT NULL
 )`);
 
 db.exec(`CREATE TABLE IF NOT EXISTS storeProducts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_store INTEGER NOT NULL UNIQUE PRIMARY KEY,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  id_store INTEGER NOT NULL UNIQUE,
   array_products_string TEXT NOT NULL
 )`);
 
 db.exec(`CREATE TABLE IF NOT EXISTS newProductsStore (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_store INTEGER NOT NULL PRIMARY KEY,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    id_store INTEGER NOT NULL,
     array_products_string TEXT NOT NULL
 )`);
 
 db.exec(
-  `CREATE TABLE IF NOT EXISTS lastRun (id INTEGER PRIMARY KEY AUTOINCREMENT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
+  `CREATE TABLE IF NOT EXISTS lastRun (created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
 );
 
 export default db;

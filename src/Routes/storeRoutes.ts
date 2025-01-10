@@ -42,13 +42,16 @@ router.post("/getNewProductsStore", storeController.getNewProductsStore);
 
 router.get("/getAllProductsDay", storeController.registerAllProductsDay);
 
-router.get(
-  "/getAllProductsDayByIdStore/:id_store",
+router.post(
+  "/getAllProductsDayByIdStore",
   storeController.getAllProductsDayByIdStore
 );
 
 router.get("/getStores", storeController.getStores);
 
 router.get("/addMarkets", storeController.addStores);
+
+router.get("/clearDataBase", storeController.clearDataBase);
+
 
 export { router };

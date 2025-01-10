@@ -3,7 +3,6 @@ import Axios from "../axios/axiosInstance";
 import db from "../createDatabase";
 import { filterProducts } from "../utils/filterProducts";
 import storesMock from "../database/mock_data_markets";
-import { getFistProductsDay } from "../utils/getFirstProductsDay";
 import { filterNewProducts } from "../utils/filterNewProducts";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
@@ -58,26 +57,22 @@ export class StoreService {
       ...filteredProductsList3,
     ];
 
-    const allProductsClean = _.uniqBy(allProducts, "id");
+    const uniqueProducts = _.uniqBy(allProducts, "id");
 
-    allProductsClean.unshift({productsCount: allProductsClean.length});
-
-    if (firstRequestDay) {
-      const insert = db.prepare(
-        "INSERT OR REPLACE INTO storeProducts (id_store, array_products_string) VALUES (?, ?)"
-      );
-
-      insert.run(configs.stores[0], JSON.stringify(allProductsClean, null, 0));
-
-      return allProductsClean;
-    }
+    const allProductsClean: any = {
+      id_store: configs.stores[0],
+      products_count: uniqueProducts.length,
+      products: uniqueProducts,
+    };
 
     const insert = db.prepare(
       "INSERT OR REPLACE INTO storeProducts (id_store, array_products_string) VALUES (?, ?)"
     );
 
-    insert.run(configs.stores[0], JSON.stringify(allProductsClean, null, 0));
-
+    insert.run(
+      configs.stores[0],
+      JSON.stringify(allProductsClean.products, null, 0)
+    );
     return allProductsClean;
   }
 
@@ -89,8 +84,53 @@ export class StoreService {
   }
 
   static getAllProductsDay = async () => {
-    const productsAndStores = await getFistProductsDay();
-    return productsAndStores;
+    const getAllConfigsStores = db.prepare(`SELECT * FROM stores`).all();
+
+    const AllconfigsStores = getAllConfigsStores.map((configStore: any) => {
+      return {
+        state: {
+          parent_store_type: configStore.parent_store_type,
+          store_type: configStore.store_type,
+        },
+        stores: [Number(configStore.id_store)],
+      };
+    });
+
+    const AllStoreProductOffers = await Promise.all(
+      AllconfigsStores.map(async (configStore: any) => {
+        const storeProducts = await StoreService.getAllStoreProductOffers({
+          configs: configStore,
+          firstRequestDay: true,
+        });
+
+        return {
+          id_store: configStore.stores[0],
+          products_count: storeProducts.products_count,
+          products: storeProducts.products,
+        };
+      })
+    );
+
+    db.transaction(() => {
+      AllStoreProductOffers.map((storeProductOffers) => {
+        const insertQuery = `INSERT OR REPLACE INTO firstProductsDay (
+          id_store, array_products_string) 
+          VALUES (?, ?)`;
+
+        const stmt = db.prepare(insertQuery);
+        stmt.run(
+          storeProductOffers.id_store,
+          JSON.stringify(storeProductOffers.products, null, 0)
+        );
+      });
+
+      const insertLastRunStmt = db.prepare(
+        "INSERT INTO lastRun DEFAULT VALUES"
+      );
+      insertLastRunStmt.run();
+    })();
+
+    return AllStoreProductOffers;
   };
 
   static getAllProductsDayByIdStore = async ({
@@ -102,16 +142,14 @@ export class StoreService {
       return { error: "O parâmetro id_store é obrigatório." };
     }
 
-    const stmt = db.prepare(
-      `SELECT * FROM firstProductsDay WHERE id_store = ?`
-    );
-    const product = stmt.get(id_store);
+    const stmt = db.prepare(`SELECT * FROM storeProducts WHERE id_store = ?`);
+    const products = stmt.get(id_store);
 
-    if (!product) {
+    if (!products) {
       return [];
     }
 
-    return product as IStoreProductOffer;
+    return products as IStoreProductOffer;
   };
 
   static async globalSearchProducts({ query }: { query: string }) {
@@ -176,5 +214,19 @@ export class StoreService {
     });
 
     return storesMock;
+  };
+
+  static clearDataBase = async () => {
+    const tables = db
+      .prepare(
+        `SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'`
+      )
+      .all();
+
+    tables.forEach(({ name }: any) => {
+      if (name !== "stores") {
+        db.exec(`DELETE FROM "${name}";`);
+      }
+    });
   };
 }
