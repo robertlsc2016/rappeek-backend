@@ -5,8 +5,8 @@ import { StoreService } from "./services/storeService";
 import runCronJobs from "./crons/test-cron";
 import https from "https";
 import fs from "fs";
-import path from "path";
 import os from "os";
+require("dotenv").config();
 
 const app = express();
 const PORT = 3000;
@@ -22,9 +22,9 @@ app.use("/store", storeRouter);
 
 if (os.platform() == "linux") {
   const sslOptions = {
-    key: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "privkey1.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "cert1.pem")),
-    ca: fs.readFileSync(path.join(__dirname, "..", "src", "ssl", "chain1.pem")),
+    key: fs.readFileSync(process.env.PRIVATE_KEY || ""),
+    cert: fs.readFileSync(process.env.CERT || ""),
+    ca: fs.readFileSync(process.env.CHAIN || ""),
   };
 
   https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () => {
