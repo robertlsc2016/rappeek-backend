@@ -34,15 +34,16 @@ export class StoreService {
     ];
 
     const results = await Promise.all(
-      contexts.map(
-        async (context) =>
-          await Axios.post(base_url, {
+      contexts.map(async (context) => {
+        return (
+          (await Axios.post(base_url, {
             state: configs.state,
             stores: [configs.stores[0]],
             context: context.context,
             limit: context.limit,
-          })
-      )
+          })) || []
+        );
+      })
     );
 
     const [list1, list2, list3] = results;
@@ -58,6 +59,22 @@ export class StoreService {
     ];
 
     const uniqueProducts = _.uniqBy(allProducts, "id");
+
+    if (uniqueProducts.length === 0) {
+      const _getProductsInDB = db.prepare(
+        "SELECT * FROM firstProductsDay WHERE id_store = ?"
+      );
+      const getProductsInDB: any = _getProductsInDB.get(configs.stores[0]);
+
+      const allProductsClean: any = {
+        id_store: getProductsInDB.id_store,
+        products_count: JSON.parse(getProductsInDB?.array_products_string)
+          .length,
+        products: JSON.parse(getProductsInDB?.array_products_string),
+      };
+
+      return allProductsClean;
+    }
 
     const allProductsClean: any = {
       id_store: configs.stores[0],

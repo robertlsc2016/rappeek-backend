@@ -28,8 +28,8 @@ export class storeController {
 
   static async registerAllProductsDay(req?: any, res?: any) {
     try {
-      const products = await StoreService.getAllProductsDay();
-      res.status(200).json(products);
+      await StoreService.getAllProductsDay();
+      res.status(200).json({ success: true });
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }
