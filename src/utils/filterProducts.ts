@@ -1,7 +1,7 @@
 import { IProduct } from "../interfaces/IProduct";
 
 export const filterProducts = (data: any, initial_index: number) => {
-  if (!("components" in data)) {
+  if (!(data && typeof data === "object" && "components" in data)) {
     return [];
   }
 
