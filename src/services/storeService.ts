@@ -58,7 +58,9 @@ export class StoreService {
       ...filteredProductsList3,
     ];
 
-    const uniqueProducts = _.uniqBy(allProducts, "id");
+    const uniqueProducts = _.uniqBy(allProducts, "id").filter(
+      (product: any) => product.discount > 0
+    );
 
     if (uniqueProducts.length === 0) {
       const _getProductsInDB = db.prepare(
@@ -78,6 +80,7 @@ export class StoreService {
 
     const allProductsClean: any = {
       id_store: configs.stores[0],
+      created_at: new Date(),
       products_count: uniqueProducts.length,
       products: uniqueProducts,
     };
@@ -86,11 +89,34 @@ export class StoreService {
       "INSERT OR REPLACE INTO storeProducts (id_store, array_products_string) VALUES (?, ?)"
     );
 
-    insert.run(
-      configs.stores[0],
-      JSON.stringify(allProductsClean.products, null, 0)
+    insert.run(configs.stores[0], JSON.stringify(uniqueProducts, null, 0));
+
+    const discountRanges = [80, 60, 40, 10, 0];
+
+    const rangeProducts = discountRanges.reduce(
+      (acc: any, range, index) => {
+        const nextRange = discountRanges[index - 1] || Infinity;
+        acc[range] = allProductsClean.products
+          .filter(
+            (product: any) =>
+              product.discount < nextRange / 100 &&
+              product.discount >= range / 100 &&
+              product.discount > 0
+          )
+          .sort((a: any, b: any) => b.discount - a.discount); // Ordena do maior para o menor desconto
+
+        return acc;
+      },
+      {
+        id_store: configs.stores[0],
+        products_count: uniqueProducts.length,
+        all: allProductsClean.products
+          .filter((product: any) => product.discount > 0)
+          .sort((a: any, b: any) => b.discount - a.discount),
+      }
     );
-    return allProductsClean;
+
+    return rangeProducts;
   }
 
   static async getNewProductsStore({ configs }: { configs: IConfigs }) {
@@ -123,7 +149,7 @@ export class StoreService {
         return {
           id_store: configStore.stores[0],
           products_count: storeProducts.products_count,
-          products: storeProducts.products,
+          products: storeProducts.all,
         };
       })
     );

@@ -18,7 +18,7 @@ export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
   const newProductsFromDb = getNewProducts(storeId);
 
   // Filtrar produtos únicos
-  const uniqueInArray = liveProductsStore.products.filter(
+  const uniqueInArray = liveProductsStore.all.filter(
     (product: any) =>
       !oldProducts.some((oldProduct: any) => isObjectEqual(oldProduct, product))
   );
