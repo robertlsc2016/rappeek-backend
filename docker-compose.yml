@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   dozzle:
     image: ghcr.io/amir20/dozzle:latest
