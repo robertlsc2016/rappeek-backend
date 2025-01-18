@@ -33,7 +33,7 @@ app.use("/store", storeRouter);
 
 // Inicializações
 StoreService.addStores();
-runCronJobs();
+// runCronJobs();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
