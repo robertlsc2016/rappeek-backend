@@ -36,12 +36,16 @@ export class StoreService {
     const results = await Promise.all(
       contexts.map(async (context) => {
         return (
-          (await Axios.post(base_url, {
-            state: configs.state,
-            stores: [configs.stores[0]],
-            context: context.context,
-            limit: context.limit,
-          })) || []
+          (await Axios.post(
+            base_url,
+            {
+              state: configs.state,
+              stores: [configs.stores[0]],
+              context: context.context,
+              limit: context.limit,
+            },
+            { timeout: 10000 }
+          )) || []
         );
       })
     );
