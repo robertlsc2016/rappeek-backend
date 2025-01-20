@@ -7,9 +7,7 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["https", "http"],
   "paths": {
     "/store/": {
       "get": {

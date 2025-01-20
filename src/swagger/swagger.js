@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import swaggerAutogen from "swagger-autogen";
 
 const doc = {
@@ -5,7 +8,8 @@ const doc = {
     title: "My API",
     description: "Description",
   },
-  host: "localhost:3000",
+  host: process.env.NODE_ENV === "production" ? "" : process.env.HOST,
+  schemes: ["https", "http"],
 };
 
 const outputFile = "./swagger-output.json";

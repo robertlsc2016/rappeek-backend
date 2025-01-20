@@ -48,7 +48,7 @@ if (os.platform() == "linux") {
 
   https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () => {
     console.log(
-      `Servidor HTTPS rodando em https://${process.env.PUBLIC_IP}:${PORT}`
+      `Servidor HTTPS rodando em https://${process.env.HOST}`
     );
   });
 }
