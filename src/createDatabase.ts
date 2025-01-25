@@ -1,9 +1,16 @@
 import path from "path";
 import fs from "fs";
+
 import Database from "better-sqlite3";
 
+// Defina o caminho do banco de dados
 const dbPath = path.resolve(__dirname, "./database/database.sqlite");
-// const db = new Database(dbPath, { verbose: console.log });
+
+// Certifique-se de que a pasta existe
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
 
 const db = new Database(dbPath);
 
