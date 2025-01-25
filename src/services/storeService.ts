@@ -311,7 +311,6 @@ export class StoreService {
   }: {
     product_name: string;
   }) => {
-    console.log(product_name);
 
     const proxyUrl = "https://proxy.corsfix.com/?";
     const searchUrl = `https://www.amazon.com.br/s?k=${encodeURIComponent(
@@ -319,23 +318,13 @@ export class StoreService {
     )}`;
 
     const url = proxyUrl + searchUrl;
-    console.log(url);
 
     const html = await Axios.get(url, {
       headers: {
         origin: "https://app.corsfix.com",
         "sec-fetch-mode": "cros",
       },
-    })
-      .then((data) => {
-        console.log(data);
-        return data;
-      })
-      .catch((err) => {
-        console.log("erro: ", err);
-      });
-
-    console.log(html?.data);
+    });
 
     const $ = cheerio.load(html?.data);
     const products: any = [];
