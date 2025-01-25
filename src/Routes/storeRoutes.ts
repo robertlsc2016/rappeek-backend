@@ -45,6 +45,7 @@ router.post("/searchLocations", storeController.searchLocations);
 router.post("/getGeolocation", storeController.getGeolocation);
 
 router.post("/getStoresByLocation", storeController.getStoresByLocation);
+
 router.post("/getSimilarOnAmazon", storeController.getSimilarOnAmazon);
 
 router.post(
