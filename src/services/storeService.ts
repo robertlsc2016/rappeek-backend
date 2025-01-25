@@ -312,6 +312,8 @@ export class StoreService {
     product_name: string;
   }) => {
 
+    
+
     const proxyUrl = "https://proxy.corsfix.com/?";
     const searchUrl = `https://www.amazon.com.br/s?k=${encodeURIComponent(
       product_name

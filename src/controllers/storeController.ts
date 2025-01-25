@@ -147,7 +147,6 @@ export class storeController {
   }
   static async getSimilarOnAmazon(req: Request, res: Response) {
     const { product_name } = req.body;
-    console.log(product_name);
     try {
       const products_amazon = await StoreService.getSimilarOnAmazon({
         product_name: product_name,
