@@ -6,6 +6,7 @@ import { filterProducts } from "../utils/filterProducts";
 import { filterNewProducts } from "../utils/filterNewProducts";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
+import axios from "axios";
 const _ = require("lodash");
 const cheerio = require("cheerio");
 
@@ -310,14 +311,33 @@ export class StoreService {
   }: {
     product_name: string;
   }) => {
+    console.log(product_name);
+
     const proxyUrl = "https://proxy.corsfix.com/?";
     const searchUrl = `https://www.amazon.com.br/s?k=${encodeURIComponent(
       product_name
     )}`;
 
-    const html = await Axios.get(proxyUrl + searchUrl);   
+    const url = proxyUrl + searchUrl;
+    console.log(url);
 
-    const $ = cheerio.load(html.data);
+    const html = await Axios.get(url, {
+      headers: {
+        origin: "https://app.corsfix.com",
+        "sec-fetch-mode": "cros",
+      },
+    })
+      .then((data) => {
+        console.log(data);
+        return data;
+      })
+      .catch((err) => {
+        console.log("erro: ", err);
+      });
+
+    console.log(html?.data);
+
+    const $ = cheerio.load(html?.data);
     const products: any = [];
 
     $('[role="listitem"]').each((index: any, item: any) => {

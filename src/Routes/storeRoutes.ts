@@ -47,17 +47,15 @@ router.post("/getGeolocation", storeController.getGeolocation);
 router.post("/getStoresByLocation", storeController.getStoresByLocation);
 router.post("/getSimilarOnAmazon", storeController.getSimilarOnAmazon);
 
-// router.get("/getAllProductsDay", storeController.registerAllProductsDay);
-
 router.post(
   "/getAllProductsDayByIdStore",
   storeController.getAllProductsDayByIdStore
 );
 
-// router.get("/getStores", storeController.getStores);
-
-// router.get("/addMarkets", storeController.addStores);
-
 router.get("/clearDataBase", storeController.clearDataBase);
+
+// router.get("/getAllProductsDay", storeController.registerAllProductsDay);
+// router.get("/getStores", storeController.getStores);
+// router.get("/addMarkets", storeController.addStores);
 
 export { router };
