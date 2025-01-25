@@ -10,7 +10,6 @@ export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
   const storeId = configs.stores[0];
 
   const newProductsFromDb = await getNewProducts(storeId);
-  console.log(newProductsFromDb);
 
   const liveProductsStore = await StoreService.getAllStoreProductOffers({
     configs,

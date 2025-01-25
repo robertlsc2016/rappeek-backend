@@ -91,14 +91,14 @@ export class storeController {
     }
   }
 
-  static async getStores(req: Request, res: Response) {
-    try {
-      const stores = await StoreService.getStores();
-      res.status(200).json(stores);
-    } catch (err: any) {
-      res.status(500).json({ message: err.message });
-    }
-  }
+  // static async getStores(req: Request, res: Response) {
+  //   try {
+  //     const stores = await StoreService.getStores();
+  //     res.status(200).json(stores);
+  //   } catch (err: any) {
+  //     res.status(500).json({ message: err.message });
+  //   }
+  // }
 
   static async clearDataBase(req: Request, res: Response) {
     try {
@@ -135,13 +135,24 @@ export class storeController {
 
   static async getStoresByLocation(req: Request, res: Response) {
     const { lat, lng } = req.body;
-
     try {
       const store_by_location = await StoreService.getStoresByLocation({
         lat: lat,
         lng: lng,
       });
       res.status(200).json(store_by_location);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+  static async getSimilarOnAmazon(req: Request, res: Response) {
+    const { product_name } = req.body;
+
+    try {
+      const products_amazon = await StoreService.getSimilarOnAmazon({
+        product_name,
+      });
+      res.status(200).json(products_amazon);
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }

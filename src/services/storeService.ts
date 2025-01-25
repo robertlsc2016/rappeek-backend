@@ -7,6 +7,7 @@ import { filterNewProducts } from "../utils/filterNewProducts";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
 const _ = require("lodash");
+const cheerio = require("cheerio");
 
 export class StoreService {
   static async getInfoStoreService({ store_id }: { store_id: number }) {
@@ -173,17 +174,17 @@ export class StoreService {
     return getGlobalProducts.data.stores;
   }
 
-  static async getStores() {
-    const stmt = db.prepare(`
-    SELECT * FROM stores
-    ORDER BY 
-      preferred_order IS NOT NULL DESC, 
-      preferred_order ASC                
-  `);
+  // static async getStores() {
+  //   const stmt = db.prepare(`
+  //   SELECT * FROM stores
+  //   ORDER BY
+  //     preferred_order IS NOT NULL DESC,
+  //     preferred_order ASC
+  // `);
+  //   const stores = stmt.all();
 
-    const stores = stmt.all();
-    return stores;
-  }
+  //   return stores;
+  // }
 
   static searchLocations = async ({ query }: { query: string }) => {
     try {
@@ -277,10 +278,66 @@ export class StoreService {
         })
       );
 
-      return filteredStores;
+      const groupMapping = {
+        turbo: "turbo",
+        mercados: "super",
+        farmacias: "farmacia",
+        presentes: "regalos",
+        especializadas: "especializada",
+        shopping: "hogar",
+        bebidas: "licores",
+        flores: "floristeria",
+        express: "express",
+      };
+
+      const stores_by_group = Object.fromEntries(
+        Object.entries(groupMapping).map(([key, value]) => [
+          key,
+          filteredStores.filter(
+            (store: any) => store.sub_group.toLowerCase() === value
+          ),
+        ])
+      );
+
+      return stores_by_group;
     } catch (err) {
       throw new Error("Failed to fetch stores by location.");
     }
+  };
+
+  static getSimilarOnAmazon = async ({
+    product_name,
+  }: {
+    product_name: string;
+  }) => {
+    const proxyUrl = "https://proxy.corsfix.com/?";
+    const searchUrl = `https://www.amazon.com.br/s?k=${encodeURIComponent(
+      product_name
+    )}`;
+
+    const html = await Axios.get(proxyUrl + searchUrl);   
+
+    const $ = cheerio.load(html.data);
+    const products: any = [];
+
+    $('[role="listitem"]').each((index: any, item: any) => {
+      // const name = $(item).find(".a-text-normal").text();
+      const name = $(item).find("h2 span").text();
+      const price = `${$(item).find(".a-price-whole").text()}${$(item)
+        .find(".a-price-fraction")
+        .text()}`;
+
+      const image = $(item).find(".s-image").attr("src");
+      const link =
+        "https://www.amazon.com.br/" +
+        $(item).find(".a-link-normal.s-no-outline").attr("href");
+
+      if (name && price && image && link) {
+        products.push({ name, price, image, link });
+      }
+    });
+
+    return products;
   };
 
   static clearDataBase = async () => {
@@ -308,10 +365,8 @@ export class StoreService {
 
   // static getAllProductsDay = async () => {
   //   const getAllConfigsStores = db.prepare(`SELECT * FROM stores`).all();
-  //   console.log(getAllConfigsStores)
 
   //   return;
-  //   console.log(getAllConfigsStores)
 
   //   const AllconfigsStores = getAllConfigsStores.map((configStore: any) => {
   //     return {

@@ -45,6 +45,7 @@ router.post("/searchLocations", storeController.searchLocations);
 router.post("/getGeolocation", storeController.getGeolocation);
 
 router.post("/getStoresByLocation", storeController.getStoresByLocation);
+router.post("/getSimilarOnAmazon", storeController.getSimilarOnAmazon);
 
 // router.get("/getAllProductsDay", storeController.registerAllProductsDay);
 
@@ -53,7 +54,7 @@ router.post(
   storeController.getAllProductsDayByIdStore
 );
 
-router.get("/getStores", storeController.getStores);
+// router.get("/getStores", storeController.getStores);
 
 // router.get("/addMarkets", storeController.addStores);
 
