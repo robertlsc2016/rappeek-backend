@@ -9,11 +9,11 @@ import { storeSchema } from "../schemas/storesSchema";
 const router = Router();
 
 const userValidationSchema = Joi.object({
-  id_store: Joi.number().strict().required(),
+  store_id: Joi.number().strict().required(),
 });
 
 router.get("/", (req, res) => {
-  res.status(200).json("hello world")
+  res.status(200).json("hello world");
 });
 
 router.post(
@@ -40,7 +40,13 @@ router.post(
 
 router.post("/getNewProductsStore", storeController.getNewProductsStore);
 
-router.get("/getAllProductsDay", storeController.registerAllProductsDay);
+router.post("/searchLocations", storeController.searchLocations);
+
+router.post("/getGeolocation", storeController.getGeolocation);
+
+router.post("/getStoresByLocation", storeController.getStoresByLocation);
+
+// router.get("/getAllProductsDay", storeController.registerAllProductsDay);
 
 router.post(
   "/getAllProductsDayByIdStore",
@@ -49,9 +55,8 @@ router.post(
 
 router.get("/getStores", storeController.getStores);
 
-router.get("/addMarkets", storeController.addStores);
+// router.get("/addMarkets", storeController.addStores);
 
 router.get("/clearDataBase", storeController.clearDataBase);
-
 
 export { router };

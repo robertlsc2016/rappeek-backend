@@ -7,7 +7,10 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
-  "schemes": ["https", "http"],
+  "schemes": [
+    "http",
+    "https"
+  ],
   "paths": {
     "/store/": {
       "get": {
@@ -29,7 +32,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id_store": {
+                "store_id": {
                   "example": "any"
                 }
               }
@@ -108,9 +111,80 @@
         }
       }
     },
-    "/store/getAllProductsDay": {
-      "get": {
+    "/store/searchLocations": {
+      "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/store/getGeolocation": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "place_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/store/getStoresByLocation": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "example": "any"
+                },
+                "lng": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -131,7 +205,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id_store": {
+                "store_id": {
                   "example": "any"
                 }
               }
@@ -149,19 +223,6 @@
       }
     },
     "/store/getStores": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/store/addMarkets": {
       "get": {
         "description": "",
         "responses": {

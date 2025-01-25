@@ -9,7 +9,7 @@ const db = new Database(dbPath);
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS stores (
-    id_store INTEGER PRIMARY KEY,
+    store_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     route TEXT NOT NULL,
     parent_store_type TEXT NOT NULL,
@@ -22,19 +22,19 @@ db.exec(`
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS firstProductsDay (
-  id_store INTEGER NOT NULL PRIMARY KEY,
+  store_id INTEGER NOT NULL PRIMARY KEY,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   array_products_string TEXT NOT NULL
 )`);
 
 db.exec(`CREATE TABLE IF NOT EXISTS storeProducts (
-  id_store INTEGER NOT NULL UNIQUE PRIMARY KEY,
+  store_id INTEGER NOT NULL UNIQUE PRIMARY KEY,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   array_products_string TEXT NOT NULL
 )`);
 
 db.exec(`CREATE TABLE IF NOT EXISTS newProductsStore (
-    id_store INTEGER NOT NULL PRIMARY KEY,
+    store_id INTEGER NOT NULL PRIMARY KEY,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     array_products_string TEXT NOT NULL
 )`);

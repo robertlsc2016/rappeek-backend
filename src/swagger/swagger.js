@@ -9,7 +9,7 @@ const doc = {
     description: "Description",
   },
   host: process.env.NODE_ENV === "production" ? "" : process.env.HOST,
-  schemes: ["https", "http"],
+  schemes: ["http", "https"],
 };
 
 const outputFile = "./swagger-output.json";

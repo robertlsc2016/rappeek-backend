@@ -2,16 +2,16 @@ import { Request, Response } from "express";
 import Axios from "../axios/axiosInstance";
 import db from "../createDatabase";
 import { filterProducts } from "../utils/filterProducts";
-import storesMock from "../database/mock_data_markets";
+
 import { filterNewProducts } from "../utils/filterNewProducts";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
 const _ = require("lodash");
 
 export class StoreService {
-  static async getInfoStoreService({ id_store }: { id_store: number }) {
+  static async getInfoStoreService({ store_id }: { store_id: number }) {
     const { data } = await Axios.get(
-      `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${id_store}/`
+      `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${store_id}/`
     );
 
     return data;
@@ -19,8 +19,9 @@ export class StoreService {
 
   static async getAllStoreProductOffers({
     configs,
-    firstRequestDay = false,
+    onlyRead = false,
   }: {
+    onlyRead: boolean;
     configs: IConfigs;
     firstRequestDay: boolean;
   }): Promise<IStoreProductOffer | any> {
@@ -50,6 +51,13 @@ export class StoreService {
       })
     );
 
+    if (results[0].status == 204) {
+      return {
+        status: 204,
+        message: "está lojá não existe na base de dados da rappi",
+      };
+    }
+
     const [list1, list2, list3] = results;
 
     const filteredProductsList1 = await filterProducts(list1.data.data, 0);
@@ -66,34 +74,20 @@ export class StoreService {
       (product: any) => product.discount > 0
     );
 
-    if (uniqueProducts.length === 0) {
-      const _getProductsInDB = db.prepare(
-        "SELECT * FROM firstProductsDay WHERE id_store = ?"
-      );
-      const getProductsInDB: any = _getProductsInDB.get(configs.stores[0]);
-
-      const allProductsClean: any = {
-        id_store: getProductsInDB.id_store,
-        products_count: JSON.parse(getProductsInDB?.array_products_string)
-          .length,
-        products: JSON.parse(getProductsInDB?.array_products_string),
-      };
-
-      return allProductsClean;
-    }
-
     const allProductsClean: any = {
-      id_store: configs.stores[0],
+      store_id: configs.stores[0],
       created_at: new Date(),
       products_count: uniqueProducts.length,
       products: uniqueProducts,
     };
 
-    const insert = db.prepare(
-      "INSERT OR REPLACE INTO storeProducts (id_store, array_products_string) VALUES (?, ?)"
-    );
+    if (!onlyRead) {
+      const insert = db.prepare(
+        "INSERT OR REPLACE INTO storeProducts (store_id, array_products_string) VALUES (?, ?)"
+      );
 
-    insert.run(configs.stores[0], JSON.stringify(uniqueProducts, null, 0));
+      insert.run(configs.stores[0], JSON.stringify(uniqueProducts, null, 0));
+    }
 
     const discountRanges = [80, 60, 40, 10, 0];
 
@@ -112,7 +106,7 @@ export class StoreService {
         return acc;
       },
       {
-        id_store: configs.stores[0],
+        store_id: configs.stores[0],
         products_count: uniqueProducts.length,
         all: allProductsClean.products
           .filter((product: any) => product.discount > 0)
@@ -127,70 +121,21 @@ export class StoreService {
     const newProducts = await filterNewProducts({
       configs: configs,
     });
+
     return newProducts;
   }
 
-  static getAllProductsDay = async () => {
-    const getAllConfigsStores = db.prepare(`SELECT * FROM stores`).all();
-
-    const AllconfigsStores = getAllConfigsStores.map((configStore: any) => {
-      return {
-        state: {
-          parent_store_type: configStore.parent_store_type,
-          store_type: configStore.store_type,
-        },
-        stores: [Number(configStore.id_store)],
-      };
-    });
-
-    const AllStoreProductOffers = await Promise.all(
-      AllconfigsStores.map(async (configStore: any) => {
-        const storeProducts = await StoreService.getAllStoreProductOffers({
-          configs: configStore,
-          firstRequestDay: true,
-        });
-
-        return {
-          id_store: configStore.stores[0],
-          products_count: storeProducts.products_count,
-          products: storeProducts.all,
-        };
-      })
-    );
-
-    db.transaction(() => {
-      AllStoreProductOffers.map((storeProductOffers) => {
-        const insertQuery = `INSERT OR REPLACE INTO firstProductsDay (
-          id_store, array_products_string) 
-          VALUES (?, ?)`;
-
-        const stmt = db.prepare(insertQuery);
-        stmt.run(
-          storeProductOffers.id_store,
-          JSON.stringify(storeProductOffers.products, null, 0)
-        );
-      });
-
-      const insertLastRunStmt = db.prepare(
-        "INSERT INTO lastRun DEFAULT VALUES"
-      );
-      insertLastRunStmt.run();
-    })();
-
-    return AllStoreProductOffers;
-  };
-
   static getAllProductsDayByIdStore = async ({
-    id_store,
+    store_id,
   }: {
-    id_store: number;
+    store_id: number;
   }): Promise<IStoreProductOffer | { error: string } | []> => {
-    if (!id_store) {
-      return { error: "O parâmetro id_store é obrigatório." };
+    if (!store_id) {
+      return { error: "O parâmetro store_id é obrigatório." };
     }
 
-    const stmt = db.prepare(`SELECT * FROM storeProducts WHERE id_store = ?`);
-    const products = stmt.get(id_store);
+    const stmt = db.prepare(`SELECT * FROM storeProducts WHERE store_id = ?`);
+    const products = stmt.get(store_id);
 
     if (!products) {
       return [];
@@ -240,27 +185,102 @@ export class StoreService {
     return stores;
   }
 
-  static addStores = async () => {
-    const insertQuery = `INSERT OR IGNORE INTO stores (
-    name, route, id_store, parent_store_type, store_type, type, banner_url, preferred_order ) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-`;
-    const stmt = db.prepare(insertQuery);
-
-    storesMock.forEach((store) => {
-      stmt.run(
-        store.name,
-        store.route,
-        store.id_store,
-        store.parent_store_type,
-        store.store_type,
-        store.type,
-        store.banner_url,
-        store.preferred_order
+  static searchLocations = async ({ query }: { query: string }) => {
+    try {
+      const { data: locations } = await Axios.get(
+        `https://services.rappi.com.br/api/ms/address/autocomplete?lat=0&lng=0&text=${query}&source=locationservices`
       );
-    });
 
-    return storesMock;
+      const filterLocations = locations.map(
+        ({ main_text, secondary_text, place_id, source }: any) => {
+          const data = {
+            address: main_text,
+            secondary_address: secondary_text,
+            place_id: place_id,
+            source: source,
+          };
+
+          return data;
+        }
+      );
+
+      return filterLocations;
+    } catch (err) {
+      return err;
+    }
+  };
+
+  static getGeolocation = async ({ place_id }: { place_id: string }) => {
+    try {
+      const { data: location } = await Axios.get(
+        `https://services.rappi.com.br/api/ms/address/place-details?placeid=${place_id}&source=locationservices&raw=false&strictbounds=true`
+      );
+
+      const filterLocation = {
+        address: location.original_text,
+        geolocation: {
+          lat: location.location[0],
+          lng: location.location[1],
+        },
+      };
+
+      return filterLocation;
+    } catch (err) {
+      return err;
+    }
+  };
+
+  static getStoresByLocation = async ({
+    lat,
+    lng,
+  }: {
+    lat: string;
+    lng: string;
+  }) => {
+    try {
+      const {
+        data: {
+          data: {
+            context_info: { stores: stores },
+          },
+        },
+      } = await Axios.post(
+        `https://services.rappi.com.br/api/web-gateway/web/dynamic/context/content`,
+        {
+          limit: 2,
+          offset: 0,
+          context: "store_category_index",
+          state: {
+            parent_store_type: "market",
+            lat: lat,
+            lng: lng,
+            category: "",
+          },
+        }
+      );
+
+      const filteredStores = stores.map(
+        ({
+          store_id,
+          name,
+          store_type,
+          image,
+          sub_group,
+          parent_store_type,
+        }: any) => ({
+          store_id,
+          store_name: name,
+          store_type: store_type,
+          store_img: image,
+          sub_group: sub_group,
+          parent_store_type: parent_store_type,
+        })
+      );
+
+      return filteredStores;
+    } catch (err) {
+      throw new Error("Failed to fetch stores by location.");
+    }
   };
 
   static clearDataBase = async () => {
@@ -276,4 +296,67 @@ export class StoreService {
       }
     });
   };
+
+  //   static addStores = async () => {
+  //     const insertQuery = `INSERT OR IGNORE INTO stores (
+  //     name, route, store_id, parent_store_type, store_type, type, banner_url, preferred_order )
+  //     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  // `;
+  //     const stmt = db.prepare(insertQuery);
+
+  //   };
+
+  // static getAllProductsDay = async () => {
+  //   const getAllConfigsStores = db.prepare(`SELECT * FROM stores`).all();
+  //   console.log(getAllConfigsStores)
+
+  //   return;
+  //   console.log(getAllConfigsStores)
+
+  //   const AllconfigsStores = getAllConfigsStores.map((configStore: any) => {
+  //     return {
+  //       state: {
+  //         parent_store_type: configStore.parent_store_type,
+  //         store_type: configStore.store_type,
+  //       },
+  //       stores: [Number(configStore.store_id)],
+  //     };
+  //   });
+
+  //   const AllStoreProductOffers = await Promise.all(
+  //     AllconfigsStores.map(async (configStore: any) => {
+  //       const storeProducts = await StoreService.getAllStoreProductOffers({
+  //         configs: configStore,
+  //         firstRequestDay: true,
+  //       });
+
+  //       return {
+  //         store_id: configStore.stores[0],
+  //         products_count: storeProducts.products_count,
+  //         products: storeProducts.all,
+  //       };
+  //     })
+  //   );
+
+  //   db.transaction(() => {
+  //     AllStoreProductOffers.map((storeProductOffers) => {
+  //       const insertQuery = `INSERT OR REPLACE INTO firstProductsDay (
+  //         store_id, array_products_string)
+  //         VALUES (?, ?)`;
+
+  //       const stmt = db.prepare(insertQuery);
+  //       stmt.run(
+  //         storeProductOffers.store_id,
+  //         JSON.stringify(storeProductOffers.products, null, 0)
+  //       );
+  //     });
+
+  //     const insertLastRunStmt = db.prepare(
+  //       "INSERT INTO lastRun DEFAULT VALUES"
+  //     );
+  //     insertLastRunStmt.run();
+  //   })();
+
+  //   return AllStoreProductOffers;
+  // };
 }

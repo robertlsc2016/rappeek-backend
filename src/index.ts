@@ -32,8 +32,8 @@ app.use(
 app.use("/store", storeRouter);
 
 // Inicializações
-StoreService.addStores();
-runCronJobs();
+// StoreService.addStores();
+// runCronJobs();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

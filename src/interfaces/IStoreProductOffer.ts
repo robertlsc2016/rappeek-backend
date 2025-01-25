@@ -1,4 +1,4 @@
 export interface IStoreProductOffer {
-    id_store: number;
+    store_id: number;
     array_product_string: string;
 }
