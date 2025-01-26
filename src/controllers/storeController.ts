@@ -146,13 +146,22 @@ export class storeController {
       res.status(500).json({ message: err.message });
     }
   }
-  static async getSimilarOnAmazon(req: Request, res: Response) {
+
+  static async getSimilarOnAmazon(req: Request, res: any) {
     const { product_name } = req.body;
+
     try {
       const products_amazon = await StoreService.getSimilarOnAmazon({
         product_name: product_name,
       });
-      res.status(200).json(products_amazon);
+
+      if (products_amazon.length == 0) {
+        return res.status(404).json({
+          status: 404,
+          message: "erro ao encontrar produtos similares na amazon",
+        });
+      }
+      return res.status(200).json(products_amazon);
     } catch (err: any) {
       res.status(500).json({ message: err.message });
     }

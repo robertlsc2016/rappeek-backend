@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, urlencoded } from "express";
 import Axios from "../axios/axiosInstance";
 import db from "../createDatabase";
 import { filterProducts } from "../utils/filterProducts";
@@ -253,13 +253,7 @@ export class StoreService {
     lng: string;
   }) => {
     try {
-      const {
-        data: {
-          data: {
-            context_info: { stores: stores },
-          },
-        },
-      } = await Axios.post(
+      const data = await Axios.post(
         `https://services.rappi.com.br/api/web-gateway/web/dynamic/context/content`,
         {
           limit: 2,
@@ -274,7 +268,16 @@ export class StoreService {
         }
       );
 
-      const filteredStores = stores.map(
+      if (data.status) {
+        return {
+          status: 204,
+          message: "não existem lojas dispoíveis para sua localidade",
+        };
+      }
+
+      const stract_stores = data.data.data.context_info.stores;
+
+      const filteredStores = stract_stores.map(
         ({
           store_id,
           name,
@@ -325,40 +328,42 @@ export class StoreService {
     product_name: string;
   }) => {
     const proxyUrl = "https://proxy.corsfix.com/?";
-    const searchUrl = `https://www.amazon.com.br/s?k=${encodeURIComponent(
-      product_name
-    )}`;
+    const searchUrl = `https://www.amazon.com.br/s?k=${product_name}`;
 
     const url = proxyUrl + searchUrl;
 
-    const html = await Axios.get(url, {
-      headers: {
-        origin: "https://app.corsfix.com",
-        "sec-fetch-mode": "cros",
-      },
-    });
+    try {
+      const html = await axios.get(url, {
+        headers: {
+          origin: "https://app.corsfix.com",
+          "sec-fetch-mode": "cros",
+        },
+      });
 
-    const $ = cheerio.load(html?.data);
-    const products: any = [];
+      const $ = cheerio.load(html?.data);
+      const products: any = [];
 
-    $('[role="listitem"]').each((index: any, item: any) => {
-      // const name = $(item).find(".a-text-normal").text();
-      const name = $(item).find("h2 span").text();
-      const price = `${$(item).find(".a-price-whole").text()}${$(item)
-        .find(".a-price-fraction")
-        .text()}`;
+      $('[role="listitem"]').each((index: any, item: any) => {
+        // const name = $(item).find(".a-text-normal").text();
+        const name = $(item).find("h2 span").text();
+        const price = `${$(item).find(".a-price-whole").text()}${$(item)
+          .find(".a-price-fraction")
+          .text()}`;
 
-      const image = $(item).find(".s-image").attr("src");
-      const link =
-        "https://www.amazon.com.br/" +
-        $(item).find(".a-link-normal.s-no-outline").attr("href");
+        const image = $(item).find(".s-image").attr("src");
+        const link =
+          "https://www.amazon.com.br/" +
+          $(item).find(".a-link-normal.s-no-outline").attr("href");
 
-      if (name && price && image && link) {
-        products.push({ name, price, image, link });
-      }
-    });
+        if (name && price && image && link) {
+          products.push({ name, price, image, link });
+        }
+      });
 
-    return products;
+      return products;
+    } catch (err: any) {
+      return [];
+    }
   };
 
   static clearDataBase = async () => {
