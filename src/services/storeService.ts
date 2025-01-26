@@ -268,7 +268,7 @@ export class StoreService {
         }
       );
 
-      if (data.status) {
+      if (data.status == 204) {
         return {
           status: 204,
           message: "não existem lojas dispoíveis para sua localidade",
