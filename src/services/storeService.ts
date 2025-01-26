@@ -146,46 +146,59 @@ export class StoreService {
     return products as IStoreProductOffer;
   };
 
-  static async globalSearchProducts({ query }: { query: string }) {
-    const priorityOrder = [
-      900604367, 900542505, 900156624, 900536162, 900020818, 900631973,
-    ];
-
+  static async globalSearchProducts({
+    query,
+    lat,
+    lng,
+  }: {
+    query: string;
+    lat: any;
+    lng: any;
+  }) {
     const base_url = `https://services.rappi.com.br/api/pns-global-search-api/v1/unified-search?is_prime=true&unlimited_shipping=true`;
 
-    const getGlobalProducts = await Axios.post(base_url, {
+    const getGlobalProducts: any = await Axios.post(base_url, {
       params: { is_prime: true, unlimited_shipping: true },
       tiered_stores: [],
-      lat: -23.5717729,
-      lng: -46.730492,
+      lat: lat,
+      lng: lng,
       query: query,
       options: {},
     });
 
-    getGlobalProducts.data.stores.sort((a: any, b: any) => {
-      const priorityA = priorityOrder.indexOf(a.store_id);
-      const priorityB = priorityOrder.indexOf(b.store_id);
+    const filteredArray = getGlobalProducts.data.stores.map((store: any) => ({
+      id: store.store_id,
+      name: store.store_name,
+      store_image: store.logo,
+      products: store.products
+        .filter(
+          (product: any) =>
+            product.id &&
+            product.name &&
+            product.image &&
+            product.balance_price &&
+            product.real_price &&
+            product.price &&
+            product.unit_type &&
+            product.quantity &&
+            product.stock
+        )
+        .sort((a: any, b: any) => a.price - b.price) // Ordena pelo preço (do mais barato ao mais caro)
+        .map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          image: product.image,
+          balance_price: product.balance_price,
+          real_price: product.real_price,
+          price: product.price,
+          unit_type: product.unit_type,
+          quantity: product.quantity,
+          stock: product.stock,
+        })),
+    }));
 
-      return (
-        (priorityA === -1 ? Infinity : priorityA) -
-        (priorityB === -1 ? Infinity : priorityB)
-      );
-    });
-
-    return getGlobalProducts.data.stores;
+    return filteredArray;
   }
-
-  // static async getStores() {
-  //   const stmt = db.prepare(`
-  //   SELECT * FROM stores
-  //   ORDER BY
-  //     preferred_order IS NOT NULL DESC,
-  //     preferred_order ASC
-  // `);
-  //   const stores = stmt.all();
-
-  //   return stores;
-  // }
 
   static searchLocations = async ({ query }: { query: string }) => {
     try {
@@ -311,9 +324,6 @@ export class StoreService {
   }: {
     product_name: string;
   }) => {
-
-    
-
     const proxyUrl = "https://proxy.corsfix.com/?";
     const searchUrl = `https://www.amazon.com.br/s?k=${encodeURIComponent(
       product_name

@@ -33,6 +33,8 @@ router.post(
   validate(
     Joi.object({
       query: Joi.string().strict().required(),
+      lat: Joi.number().strict().required(),
+      lng: Joi.number().strict().required(),
     })
   ),
   storeController.globalSearchProducts

@@ -83,6 +83,12 @@
               "properties": {
                 "query": {
                   "example": "any"
+                },
+                "lat": {
+                  "example": "any"
+                },
+                "lng": {
+                  "example": "any"
                 }
               }
             }

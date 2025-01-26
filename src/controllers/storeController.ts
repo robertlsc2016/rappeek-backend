@@ -79,11 +79,12 @@ export class storeController {
   }
 
   static async globalSearchProducts(req: Request, res: Response) {
-    const { query } = req.body;
-
+    const { query, lat, lng } = req.body;
     try {
       const products = await StoreService.globalSearchProducts({
         query: query,
+        lat: lat,
+        lng: lng,
       });
       res.status(200).json(products);
     } catch (err: any) {
