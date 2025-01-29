@@ -327,13 +327,13 @@ export class StoreService {
   }: {
     product_name: string;
   }) => {
-    // const proxyUrl = "https://proxy.corsfix.com/?";
+    const proxyUrl = "https://proxy.corsfix.com/?";
     const searchUrl = `https://www.amazon.com.br/s?k=${product_name}`;
 
-    // const url = proxyUrl + searchUrl;
+    const url = proxyUrl + searchUrl;
 
     try {
-      const html = await axios.get(searchUrl, {
+      const html = await axios.get(url, {
         headers: {
           origin: "https://app.corsfix.com",
           "sec-fetch-mode": "cros",

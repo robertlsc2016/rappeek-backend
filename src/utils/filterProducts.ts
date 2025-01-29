@@ -19,6 +19,9 @@ export const filterProducts = (data: any, initial_index: number) => {
             image_url,
             quantity,
             unit_type,
+            pum,
+            stock,
+            navigation,
           }: IProduct) => ({
             id,
             name,
@@ -28,6 +31,9 @@ export const filterProducts = (data: any, initial_index: number) => {
             image_url,
             quantity,
             unit_type,
+            pum,
+            stock,
+            navigation,
           })
         )
       ) || []
