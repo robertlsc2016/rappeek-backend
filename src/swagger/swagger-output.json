@@ -52,7 +52,7 @@
         }
       }
     },
-    "/store/getAllStoreProductOffers": {
+    "/store/products_offer": {
       "post": {
         "description": "",
         "responses": {

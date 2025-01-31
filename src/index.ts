@@ -12,7 +12,7 @@ import swaggerDocument from "./swagger/swagger-output.json";
 
 dotenv.config();
 
-const PORT = 3000;
+const PORT = 3001;
 const app = express();
 
 // Middlewares globais
@@ -31,10 +31,6 @@ app.use(
 // Rotas
 app.use("/store", storeRouter);
 
-// Inicializações
-// StoreService.addStores();
-// runCronJobs();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
@@ -47,15 +43,13 @@ if (os.platform() == "linux") {
   };
 
   https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", () => {
-    console.log(
-      `Servidor HTTPS rodando em https://${process.env.HOST}`
-    );
+    console.log(`Servidor HTTPS rodando em https://${process.env.HOST}`);
   });
 }
 
 if (os.platform() == "win32") {
   app.listen(PORT, "0.0.0.0", () => {
-    console.log("API documentation: http://localhost:3000/api-docs");
+    console.log(`API documentation: http://localhost:${PORT}/api-docs`);
     console.log(`API rodando na porta http://localhost:${PORT}`);
   });
 }

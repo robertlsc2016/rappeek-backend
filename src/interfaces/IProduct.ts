@@ -7,8 +7,8 @@ export interface IProduct {
   image_url: string;
   quantity: number;
   unit_type: string;
-
+  product_id: string;
   pum: string;
   stock: number;
-  navigation: any
+  navigation: any;
 }

@@ -12,6 +12,7 @@ export const filterProducts = (data: any, initial_index: number) => {
         component.resource.products.map(
           ({
             id,
+            product_id,
             name,
             price,
             discount,
@@ -24,6 +25,7 @@ export const filterProducts = (data: any, initial_index: number) => {
             navigation,
           }: IProduct) => ({
             id,
+            product_id,
             name,
             price,
             discount,

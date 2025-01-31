@@ -23,7 +23,7 @@ router.post(
 );
 
 router.post(
-  "/getAllStoreProductOffers",
+  "/products_offer",
   validate(storeSchema),
   storeController.getAllStoreProductOffers
 );
