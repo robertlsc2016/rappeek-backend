@@ -55,12 +55,6 @@ export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
   );
 };
 
-/**
- * Verifica se dois produtos são iguais com base em suas propriedades principais.
- * @param product1 - Primeiro produto para comparar.
- * @param product2 - Segundo produto para comparar.
- * @returns Verdadeiro se os produtos forem iguais.
- */
 const isProductEqual = (product1: any, product2: any): boolean => {
   return product1.id === product2.id && product1.price === product2.price;
 };

@@ -14,19 +14,19 @@ export class storeController {
     }
   }
 
-  static async getNewProductsStore(req: Request, res: Response) {
-    const configs = req.body;
+  // static async getNewProductsStore(req: Request, res: Response) {
+  //   const configs = req.body;
 
-    try {
-      const products = await StoreService.getNewProductsStore({
-        configs: configs,
-      });
+  //   try {
+  //     const products = await StoreService.getNewProductsStore({
+  //       configs: configs,
+  //     });
 
-      res.status(200).json(products);
-    } catch (err: any) {
-      res.status(500).json({ message: err.message });
-    }
-  }
+  //     res.status(200).json(products);
+  //   } catch (err: any) {
+  //     res.status(500).json({ message: err.message });
+  //   }
+  // }
 
   // static async registerAllProductsDay(req?: any, res?: any) {
   //   try {
@@ -37,18 +37,18 @@ export class storeController {
   //   }
   // }
 
-  static async getAllProductsDayByIdStore(req: Request, res: Response) {
-    const { store_id } = req.body;
+  // static async getAllProductsDayByIdStore(req: Request, res: Response) {
+  //   const { store_id } = req.body as { store_id: number };
 
-    try {
-      const products = await StoreService.getAllProductsDayByIdStore({
-        store_id: store_id,
-      });
-      res.status(200).json(products);
-    } catch (err: any) {
-      res.status(500).json({ message: err.message });
-    }
-  }
+  //   try {
+  //     const products = await StoreService.getAllProductsDayByIdStore({
+  //       store_id: store_id,
+  //     });
+  //     res.status(200).json(products);
+  //   } catch (err: any) {
+  //     res.status(500).json({ message: err.message });
+  //   }
+  // }
 
   static async getAllStoreProductOffers(
     req: Request,

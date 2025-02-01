@@ -34,27 +34,26 @@ const db = new Database(dbPath);
 //   array_products_string TEXT NOT NULL
 // )`);
 
-db.exec(`CREATE TABLE IF NOT EXISTS storeProducts (
-  store_id INTEGER NOT NULL UNIQUE PRIMARY KEY,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  array_products_string TEXT NOT NULL
-)`);
+// db.exec(`CREATE TABLE IF NOT EXISTS storeProducts (
+//   store_id INTEGER NOT NULL UNIQUE PRIMARY KEY,
+//   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+//   array_products_string TEXT NOT NULL
+// )`);
 
-db.exec(`CREATE TABLE IF NOT EXISTS newProductsStore (
-    store_id INTEGER NOT NULL PRIMARY KEY,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    array_products_string TEXT NOT NULL
-)`);
+// db.exec(`CREATE TABLE IF NOT EXISTS newProductsStore (
+//     store_id INTEGER NOT NULL PRIMARY KEY,
+//     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     array_products_string TEXT NOT NULL
+// )`);
+
+// db.exec(
+//   `CREATE TABLE IF NOT EXISTS lastRun (created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
+// );
+
+// db.exec(`DROP TABLE IF EXISTS products`);
 
 db.exec(
-  `CREATE TABLE IF NOT EXISTS lastRun (created_at DATETIME DEFAULT CURRENT_TIMESTAMP)`
-);
-
-
-db.exec(`DROP TABLE IF EXISTS products`)
-
-db.exec(
-  `CREATE TABLE products (
+  `CREATE TABLE IF NOT EXISTS products (
   store_id INTEGER NOT NULL,
   id TEXT NOT NULL,
   product_id TEXT NOT NULL,

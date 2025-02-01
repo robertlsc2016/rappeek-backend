@@ -40,7 +40,7 @@ router.post(
   storeController.globalSearchProducts
 );
 
-router.post("/getNewProductsStore", storeController.getNewProductsStore);
+// router.post("/getNewProductsStore", storeController.getNewProductsStore);
 
 router.post("/searchLocations", storeController.searchLocations);
 
@@ -50,15 +50,6 @@ router.post("/getStoresByLocation", storeController.getStoresByLocation);
 
 router.post("/getSimilarOnAmazon", storeController.getSimilarOnAmazon);
 
-router.post(
-  "/getAllProductsDayByIdStore",
-  storeController.getAllProductsDayByIdStore
-);
-
 router.get("/clearDataBase", storeController.clearDataBase);
-
-// router.get("/getAllProductsDay", storeController.registerAllProductsDay);
-// router.get("/getStores", storeController.getStores);
-// router.get("/addMarkets", storeController.addStores);
 
 export { router };

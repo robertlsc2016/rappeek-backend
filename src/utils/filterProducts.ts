@@ -1,13 +1,13 @@
 import { IProduct } from "../interfaces/IProduct";
 
 export const filterProducts = (data: any, initial_index: number) => {
-  if (!(data && typeof data === "object" && "components" in data)) {
+
+  if (!(data && typeof data === "object" )) {
     return [];
   }
 
   return (
-    data?.components
-      ?.filter((component: any) => component.index >= initial_index)
+    data?.filter((component: any) => component.index >= initial_index)
       ?.flatMap((component: any) =>
         component.resource.products.map(
           ({
