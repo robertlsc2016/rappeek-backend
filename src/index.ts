@@ -6,13 +6,11 @@ import os from "os";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import { router as storeRouter } from "./Routes/storeRoutes";
-import { StoreService } from "./services/storeService";
-import runCronJobs from "./crons/test-cron";
 import swaggerDocument from "./swagger/swagger-output.json";
 
 dotenv.config();
 
-const PORT = 3001;
+const PORT = 3000;
 const app = express();
 
 // Middlewares globais
