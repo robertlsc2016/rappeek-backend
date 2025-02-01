@@ -16,14 +16,15 @@ import { filterProductsStoresGlobalSearch } from "../utils/filterProductsStoresG
 import { ClearDatabase } from "../queries/clearDataBase";
 import { getGlobalSearchProducts } from "../apiRappiCall/getGlobalSearchProducts";
 import { filterLocations } from "../utils/filterLocations";
-
+import { getProductsByStoreId } from '../queries/getProductsByStoreId';
+const diff = require('diff-arrays-of-objects');
 const cheerio = require("cheerio");
 
 export class StoreService {
   static async getInfoStoreService({ store_id }: { store_id: number }) {
     const infosStore = await getInfoStore({ store_id: store_id });
     return infosStore;
-  };
+  }
 
   static async getAllStoreProductOffers({
     configs,
@@ -53,7 +54,16 @@ export class StoreService {
       store_id: store_id,
     });
     return productsByRangeSorted;
-  };
+  }
+
+  // static async getNewProductsStoreService({ configs }: { configs: IConfigs }) {
+  //   const productsInDB = getProductsByStoreId({store_id: configs.stores[0]})
+  //   const productsFromAPI = await getProductsOffer({ configs: configs });
+  //   const cleanRequest = await clearRequest(productsFromAPI);
+
+  //   const diffArrays = diff(productsInDB, cleanRequest, "id");
+  //   return diffArrays.added
+  // }
 
   static async globalSearchProducts({
     query,
@@ -75,13 +85,13 @@ export class StoreService {
     });
 
     return filterGlobalSearch;
-  };
+  }
 
   static searchLocationsService = async ({ query }: { query: string }) => {
     const fetchLocations = await searchLocations({ query: query });
-    
+
     const _filterLocations = await filterLocations({
-      locations: fetchLocations
+      locations: fetchLocations,
     });
     return _filterLocations;
   };
@@ -157,5 +167,4 @@ export class StoreService {
   static clearDataBase = async () => {
     return ClearDatabase();
   };
-
 }

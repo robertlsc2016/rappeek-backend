@@ -1,6 +1,4 @@
 export const filterLocations = async ({ locations }: { locations: any }) => {
-  console.log(locations);
-
   const _filterLocations = locations.map(
     ({ main_text, secondary_text, place_id, source }: any) => {
       const data = {

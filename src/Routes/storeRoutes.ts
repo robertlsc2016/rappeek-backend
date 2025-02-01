@@ -40,7 +40,7 @@ router.post(
   storeController.globalSearchProducts
 );
 
-// router.post("/getNewProductsStore", storeController.getNewProductsStore);
+// router.post("/getNewProductsStore", storeController.getNewProductsStoreController);
 
 router.post("/searchLocations", storeController.searchLocationsController);
 

@@ -14,36 +14,14 @@ export class storeController {
     }
   }
 
-  // static async getNewProductsStore(req: Request, res: Response) {
+  // static async getNewProductsStoreController(req: Request, res: Response) {
   //   const configs = req.body;
 
   //   try {
-  //     const products = await StoreService.getNewProductsStore({
+  //     const products = await StoreService.getNewProductsStoreService({
   //       configs: configs,
   //     });
 
-  //     res.status(200).json(products);
-  //   } catch (err: any) {
-  //     res.status(500).json({ message: err.message });
-  //   }
-  // }
-
-  // static async registerAllProductsDay(req?: any, res?: any) {
-  //   try {
-  //     const allProducts = await StoreService.getAllProductsDay();
-  //     res.status(200).json({ success: true });
-  //   } catch (err: any) {
-  //     res.status(500).json({ message: err.message });
-  //   }
-  // }
-
-  // static async getAllProductsDayByIdStore(req: Request, res: Response) {
-  //   const { store_id } = req.body as { store_id: number };
-
-  //   try {
-  //     const products = await StoreService.getAllProductsDayByIdStore({
-  //       store_id: store_id,
-  //     });
   //     res.status(200).json(products);
   //   } catch (err: any) {
   //     res.status(500).json({ message: err.message });
@@ -92,7 +70,6 @@ export class storeController {
     }
   }
 
-
   static async clearDataBase(req: Request, res: Response) {
     try {
       const status = await StoreService.clearDataBase();
@@ -105,7 +82,9 @@ export class storeController {
   static async searchLocationsController(req: Request, res: Response) {
     const { query } = req.body;
     try {
-      const locations = await StoreService.searchLocationsService({ query: query });
+      const locations = await StoreService.searchLocationsService({
+        query: query,
+      });
       res.status(200).json(locations);
     } catch (err: any) {
       res.status(500).json({ message: err.message });
