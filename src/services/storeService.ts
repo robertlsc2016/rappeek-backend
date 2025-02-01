@@ -1,12 +1,7 @@
 import { filterLocations } from "./../utils/filterLocations";
-import Axios from "../axios/axiosInstance";
-import db from "../createDatabase";
-
-import { filterNewProducts } from "../utils/filterNewProducts";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
 import axios from "axios";
-import { IProduct } from "../interfaces/IProduct";
 import { getProductsOffer } from "../apiRappiCall/getProductsOffer";
 import { productsByRange } from "../queries/productsByRange";
 import { clearRequest } from "../utils/reorderProductsInOffer";
@@ -18,9 +13,10 @@ import { getInfoStore } from "../apiRappiCall/getInfoStore";
 import { deleteAllProductsByID } from "../queries/deleteAllProductsByID";
 import { insertProducts } from "../queries/insertProducts";
 import { reorderProductsByRange } from "../utils/reorderProductsByRange";
-import { getGlobalSearchProducts } from "../apiRappiCall/getglobalSearchProducts";
 import { filterProductsStoresGlobalSearch } from "../utils/filterProductsStoresGlobalSearch";
 import { ClearDatabase } from "../queries/clearDataBase";
+import { getGlobalSearchProducts } from "../apiRappiCall/getGlobalSearchProducts";
+
 const cheerio = require("cheerio");
 
 export class StoreService {
