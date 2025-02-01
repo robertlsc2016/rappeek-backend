@@ -30,11 +30,8 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
       })
     );
 
-    if (results[0].status == 204) {
-      return {
-        status: 204,
-        message: "está lojá não existe na base de dados da rappi",
-      };
+    if (results[0].status == 204 && results[1].status == 204) {
+      throw new Error("está loja não existe na base de dados da rappi");
     }
 
     const _result = [
@@ -44,6 +41,8 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
 
     return _result;
   } catch (err) {
-    throw new Error(`erro ao buscar produtos na api do rappi: ${err}`);
+    throw new Error(
+      `[message: erro ao buscar produtos na api do rappi] [error: ${err} ]`
+    );
   }
 };

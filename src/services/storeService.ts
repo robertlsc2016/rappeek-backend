@@ -2,28 +2,27 @@ import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
 import axios from "axios";
 import { getProductsOffer } from "../apiRappiCall/getProductsOffer";
-import { productsByRange } from "../queries/productsByRange";
 import { clearRequest } from "../utils/reorderProductsInOffer";
 import { getGeolocation } from "../apiRappiCall/getGeolocation";
 import { getStoresByLocation } from "../apiRappiCall/getStoresByLocation";
 import { filterStores } from "../utils/filterStores";
 import { searchLocations } from "../apiRappiCall/searchLocations";
 import { getInfoStore } from "../apiRappiCall/getInfoStore";
-import { deleteAllProductsByID } from "../queries/deleteAllProductsByID";
-import { insertProducts } from "../queries/insertProducts";
 import { reorderProductsByRange } from "../utils/reorderProductsByRange";
 import { filterProductsStoresGlobalSearch } from "../utils/filterProductsStoresGlobalSearch";
 import { ClearDatabase } from "../queries/clearDataBase";
 import { getGlobalSearchProducts } from "../apiRappiCall/getGlobalSearchProducts";
 import { filterLocations } from "../utils/filterLocations";
-import { getProductsByStoreId } from '../queries/getProductsByStoreId';
-const diff = require('diff-arrays-of-objects');
 const cheerio = require("cheerio");
 
 export class StoreService {
   static async getInfoStoreService({ store_id }: { store_id: number }) {
-    const infosStore = await getInfoStore({ store_id: store_id });
-    return infosStore;
+    try {
+      const infosStore = await getInfoStore({ store_id: store_id });
+      return infosStore;
+    } catch (err: any) {
+      throw new Error(`${err.message}`);
+    }
   }
 
   static async getAllStoreProductOffers({
@@ -34,36 +33,19 @@ export class StoreService {
     firstRequestDay: boolean;
   }): Promise<IStoreProductOffer | any> {
     const store_id = configs.stores[0];
+    try {
+      const fetchProductsInOffer = await getProductsOffer({ configs: configs });
+      const cleanRequest = await clearRequest(fetchProductsInOffer);
 
-    // COLETA PRODUTOS
-    const fetchProductsInOffer = await getProductsOffer({ configs: configs });
-    // LIMPA A REQUISICAO
-    const cleanRequest = await clearRequest(fetchProductsInOffer);
-
-    // DELETA O QUE TEM PELO STORE_ID
-    await deleteAllProductsByID({ store_id: store_id });
-    // BOTA OS PRODUTOS NOVOS
-    await insertProducts({
-      configs: configs,
-      products: cleanRequest,
-    });
-
-    const products = await productsByRange({ configs: configs });
-    const productsByRangeSorted = await reorderProductsByRange({
-      products: products,
-      store_id: store_id,
-    });
-    return productsByRangeSorted;
+      const productsByRangeSorted = await reorderProductsByRange({
+        products: cleanRequest,
+        store_id: store_id,
+      });
+      return productsByRangeSorted;
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
   }
-
-  // static async getNewProductsStoreService({ configs }: { configs: IConfigs }) {
-  //   const productsInDB = getProductsByStoreId({store_id: configs.stores[0]})
-  //   const productsFromAPI = await getProductsOffer({ configs: configs });
-  //   const cleanRequest = await clearRequest(productsFromAPI);
-
-  //   const diffArrays = diff(productsInDB, cleanRequest, "id");
-  //   return diffArrays.added
-  // }
 
   static async globalSearchProducts({
     query,
@@ -88,17 +70,25 @@ export class StoreService {
   }
 
   static searchLocationsService = async ({ query }: { query: string }) => {
-    const fetchLocations = await searchLocations({ query: query });
+    try {
+      const fetchLocations = await searchLocations({ query: query });
 
-    const _filterLocations = await filterLocations({
-      locations: fetchLocations,
-    });
-    return _filterLocations;
+      const _filterLocations = await filterLocations({
+        locations: fetchLocations,
+      });
+      return _filterLocations;
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
   };
 
   static getGeolocation = async ({ place_id }: { place_id: string }) => {
-    const _geoLocation = await getGeolocation({ place_id: place_id });
-    return _geoLocation;
+    try {
+      const _geoLocation = await getGeolocation({ place_id: place_id });
+      return _geoLocation;
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
   };
 
   static getStoresByLocation = async ({

@@ -16,23 +16,30 @@ export const getInfoStore = async ({
   store_id,
 }: {
   store_id: number;
-}): Promise<StoreInfos> => {
+}): Promise<StoreInfos | any> => {
   try {
-    const { data: infoStore } = await Axios.get<StoreInfos>(
+    const { data } = await Axios.get<StoreInfos | any>(
       `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${store_id}/`
     );
+    
+    if (data["error_backend_stores-router-id"].http_status_code == 404) {
+      throw new Error(
+        `[message: erro ao se comunicar com a api de rappi para busca de informações da loja] [error: loja não encontrada. revise o store_id]`
+      );
+    }
 
-    // Extraindo somente os campos necessários
     const filteredStoreInfo: StoreInfos = {
-      address: infoStore.address,
-      name: infoStore.name,
-      store_id: infoStore.store_id,
-      store_type_id: infoStore.store_type_id,
-      store_type: infoStore.store_type.parent_id,
+      address: data.address,
+      name: data.name,
+      store_id: data.store_id,
+      store_type_id: data.store_type_id,
+      store_type: data.store_type.parent_id,
     };
 
     return filteredStoreInfo;
-  } catch (err) {
-    throw new Error(`erro ao encontrar informações da loja: ${err}`);
+  } catch (err: any) {
+    throw new Error(
+      `${err.message}`
+    );
   }
 };

@@ -7,7 +7,9 @@ export const searchLocations = async ({ query }: { query: string }) => {
     );
 
     return locations;
-  } catch (err) {
-    throw new Error("erro ao buscar localizacoes: ${err}");
+  } catch (err: any) {
+    throw new Error(
+      `[message: erro ao se comunicar com a api de rappi para busca de localizações] [erro: ${err}]`
+    );
   }
 };

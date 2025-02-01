@@ -16,6 +16,8 @@ export const getGeolocation = async ({ place_id }: { place_id: string }) => {
 
     return filterLocation;
   } catch (err) {
-    throw new Error("erro ao coletar a geolocation na api do rappi");
+    throw new Error(
+      `[message: erro ao coletar a geolocation na api do rappi], [error: ${err}]`
+    );
   }
 };
