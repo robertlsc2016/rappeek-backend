@@ -42,7 +42,7 @@ router.post(
 
 // router.post("/getNewProductsStore", storeController.getNewProductsStore);
 
-router.post("/searchLocations", storeController.searchLocations);
+router.post("/searchLocations", storeController.searchLocationsController);
 
 router.post("/getGeolocation", storeController.getGeolocation);
 

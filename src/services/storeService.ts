@@ -1,4 +1,3 @@
-import { filterLocations } from "./../utils/filterLocations";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
 import axios from "axios";
@@ -16,6 +15,7 @@ import { reorderProductsByRange } from "../utils/reorderProductsByRange";
 import { filterProductsStoresGlobalSearch } from "../utils/filterProductsStoresGlobalSearch";
 import { ClearDatabase } from "../queries/clearDataBase";
 import { getGlobalSearchProducts } from "../apiRappiCall/getGlobalSearchProducts";
+import { filterLocations } from "../utils/filterLocations";
 
 const cheerio = require("cheerio");
 
@@ -23,7 +23,7 @@ export class StoreService {
   static async getInfoStoreService({ store_id }: { store_id: number }) {
     const infosStore = await getInfoStore({ store_id: store_id });
     return infosStore;
-  }
+  };
 
   static async getAllStoreProductOffers({
     configs,
@@ -53,7 +53,7 @@ export class StoreService {
       store_id: store_id,
     });
     return productsByRangeSorted;
-  }
+  };
 
   static async globalSearchProducts({
     query,
@@ -75,12 +75,13 @@ export class StoreService {
     });
 
     return filterGlobalSearch;
-  }
+  };
 
-  static searchLocations = async ({ query }: { query: string }) => {
+  static searchLocationsService = async ({ query }: { query: string }) => {
     const fetchLocations = await searchLocations({ query: query });
+    
     const _filterLocations = await filterLocations({
-      locations: fetchLocations,
+      locations: fetchLocations
     });
     return _filterLocations;
   };
@@ -156,4 +157,5 @@ export class StoreService {
   static clearDataBase = async () => {
     return ClearDatabase();
   };
+
 }

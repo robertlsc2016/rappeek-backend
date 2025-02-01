@@ -92,14 +92,6 @@ export class storeController {
     }
   }
 
-  // static async getStores(req: Request, res: Response) {
-  //   try {
-  //     const stores = await StoreService.getStores();
-  //     res.status(200).json(stores);
-  //   } catch (err: any) {
-  //     res.status(500).json({ message: err.message });
-  //   }
-  // }
 
   static async clearDataBase(req: Request, res: Response) {
     try {
@@ -110,11 +102,10 @@ export class storeController {
     }
   }
 
-  static async searchLocations(req: Request, res: Response) {
+  static async searchLocationsController(req: Request, res: Response) {
     const { query } = req.body;
-
     try {
-      const locations = await StoreService.searchLocations({ query: query });
+      const locations = await StoreService.searchLocationsService({ query: query });
       res.status(200).json(locations);
     } catch (err: any) {
       res.status(500).json({ message: err.message });
