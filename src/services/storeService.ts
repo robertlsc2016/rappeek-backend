@@ -1,3 +1,4 @@
+import { cleanHtmlFromAmazon } from "./../utils/cleanHtmlFromAmazon";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
 import axios from "axios";
@@ -13,6 +14,7 @@ import { filterProductsStoresGlobalSearch } from "../utils/filterProductsStoresG
 import { ClearDatabase } from "../queries/clearDataBase";
 import { getGlobalSearchProducts } from "../apiRappiCall/getGlobalSearchProducts";
 import { filterLocations } from "../utils/filterLocations";
+import { getSimilarOnAmazon } from "../amazonCall/getSimilarOnAmazon";
 const cheerio = require("cheerio");
 
 export class StoreService {
@@ -110,47 +112,19 @@ export class StoreService {
     return _filterStores;
   };
 
-  static getSimilarOnAmazon = async ({
+  static fetchSimilarOnAmazon = async ({
     product_name,
   }: {
     product_name: string;
   }) => {
-    const proxyUrl = "https://proxy.corsfix.com/?";
-    const searchUrl = `https://www.amazon.com.br/s?k=${product_name}`;
-
-    const url = proxyUrl + searchUrl;
-
     try {
-      const html = await axios.get(url, {
-        headers: {
-          origin: "https://app.corsfix.com",
-          "sec-fetch-mode": "cros",
-        },
+      const htmlAmazon = await getSimilarOnAmazon({
+        product_name: product_name,
       });
-
-      const $ = cheerio.load(html?.data);
-      const products: any = [];
-
-      $('[role="listitem"]').each((index: any, item: any) => {
-        // const name = $(item).find(".a-text-normal").text();
-        const name = $(item).find("h2 span").text();
-        const price = `${$(item).find(".a-price-whole").text()}${$(item)
-          .find(".a-price-fraction")
-          .text()}`;
-
-        const image = $(item).find(".s-image").attr("src");
-        const link =
-          "https://www.amazon.com.br/" +
-          $(item).find(".a-link-normal.s-no-outline").attr("href");
-
-        if (name && price && image && link) {
-          products.push({ name, price, image, link });
-        }
-      });
-
-      return products;
+      const cleanHtml = await cleanHtmlFromAmazon({ html: htmlAmazon });
+      return cleanHtml;
     } catch (err: any) {
-      return [];
+      throw err;
     }
   };
 

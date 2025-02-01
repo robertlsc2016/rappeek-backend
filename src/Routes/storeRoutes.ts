@@ -1,7 +1,7 @@
+import { validate } from "./../middlewares/validateMiddleware";
 // routes/userRoutes.ts
 import { Router, Request, Response, response } from "express";
 
-import { validate } from "../middlewares/validateMiddleware";
 import Joi from "joi";
 import { storeController } from "../controllers/storeController";
 import { storeSchema } from "../schemas/storesSchema";
@@ -56,7 +56,15 @@ router.post(
 
 router.post("/getStoresByLocation", storeController.getStoresByLocation);
 
-router.post("/getSimilarOnAmazon", storeController.getSimilarOnAmazon);
+router.post(
+  "/getSimilarOnAmazon",
+  validate(
+    Joi.object({
+      product_name: Joi.string().strict().required(),
+    })
+  ),
+  storeController.getSimilarOnAmazon
+);
 
 router.get("/clearDataBase", storeController.clearDataBase);
 
