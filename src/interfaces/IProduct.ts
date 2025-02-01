@@ -10,5 +10,5 @@ export interface IProduct {
   product_id: string;
   pum: string;
   stock: number;
-  navigation: any;
+  navigation: { deeplink: string; fallback: string };
 }

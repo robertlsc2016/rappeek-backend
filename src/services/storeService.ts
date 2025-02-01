@@ -1,4 +1,3 @@
-import { Request, Response, urlencoded } from "express";
 import Axios from "../axios/axiosInstance";
 import db from "../createDatabase";
 import { filterProducts } from "../utils/filterProducts";
@@ -7,6 +6,7 @@ import { filterNewProducts } from "../utils/filterNewProducts";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
 import axios from "axios";
+import { IProduct } from "../interfaces/IProduct";
 const _ = require("lodash");
 const cheerio = require("cheerio");
 
@@ -30,93 +30,147 @@ export class StoreService {
     const base_url =
       "https://services.rappi.com.br/api/web-gateway/web/dynamic/context/content/";
 
-    const contexts = [
-      { context: "sub_aisles", limit: 100 },
-      { context: "store_home", limit: 100 },
-      { context: "sub_aisles", limit: 100 },
-    ];
+    try {
+      const contexts = [
+        { context: "sub_aisles", limit: 100 },
+        { context: "store_home", limit: 100 },
+      ];
 
-    const results = await Promise.all(
-      contexts.map(async (context) => {
-        return (
-          (await Axios.post(
-            base_url,
-            {
-              state: configs.state,
-              stores: [configs.stores[0]],
-              context: context.context,
-              limit: context.limit,
-            },
-            { timeout: 10000 }
-          )) || []
-        );
-      })
-    );
-
-    if (results[0].status == 204) {
-      return {
-        status: 204,
-        message: "está lojá não existe na base de dados da rappi",
-      };
-    }
-
-    const [list1, list2, list3] = results;
-
-    const filteredProductsList1 = await filterProducts(list1.data.data, 0);
-    const filteredProductsList2 = await filterProducts(list2.data.data, 3);
-    const filteredProductsList3 = await filterProducts(list3.data.data, 3);
-
-    const allProducts = [
-      ...filteredProductsList1,
-      ...filteredProductsList2,
-      ...filteredProductsList3,
-    ];
-
-    const uniqueProducts = _.uniqBy(allProducts, "id").filter(
-      (product: any) => product.discount > 0
-    );
-
-    const allProductsClean: any = {
-      store_id: configs.stores[0],
-      created_at: new Date(),
-      products_count: uniqueProducts.length,
-      products: uniqueProducts,
-    };
-
-    if (!onlyRead) {
-      const insert = db.prepare(
-        "INSERT OR REPLACE INTO storeProducts (store_id, array_products_string) VALUES (?, ?)"
+      const results = await Promise.all(
+        contexts.map(async (context) => {
+          return (
+            (await Axios.post(
+              base_url,
+              {
+                state: configs.state,
+                stores: [configs.stores[0]],
+                context: context.context,
+                limit: context.limit,
+              },
+              { timeout: 10000 }
+            )) || []
+          );
+        })
       );
 
-      insert.run(configs.stores[0], JSON.stringify(uniqueProducts, null, 0));
-    }
-
-    const discountRanges = [80, 60, 40, 10, 0];
-
-    const rangeProducts = discountRanges.reduce(
-      (acc: any, range, index) => {
-        const nextRange = discountRanges[index - 1] || Infinity;
-        acc[range] = allProductsClean.products
-          .filter(
-            (product: any) =>
-              product.discount < nextRange / 100 &&
-              product.discount >= range / 100 &&
-              product.discount > 0
-          )
-          .sort((a: any, b: any) => b.discount - a.discount); // Ordena do maior para o menor desconto
-
-        return acc;
-      },
-      {
-        store_id: configs.stores[0],
-        products_count: uniqueProducts.length,
-        all: allProductsClean.products
-          .filter((product: any) => product.discount > 0)
-          .sort((a: any, b: any) => b.discount - a.discount),
+      if (results[0].status == 204) {
+        return {
+          status: 204,
+          message: "está lojá não existe na base de dados da rappi",
+        };
       }
-    );
 
-    return rangeProducts;
+      const [list1, list2] = results;
+
+      const filteredProductsList1 = await filterProducts(list1.data.data, 0);
+      const filteredProductsList2 = await filterProducts(list2.data.data, 3);
+
+      const allProducts = [...filteredProductsList1, ...filteredProductsList2];
+
+      const uniqueProducts = _.uniqBy(allProducts, "id").filter(
+        (product: any) => product.discount > 0
+      );
+
+      if (uniqueProducts.length === 0) {
+        return {
+          store_id: configs.stores[0],
+          products_count: 0,
+          all: [],
+          80: [],
+          60: [],
+          40: [],
+          10: [],
+          0: [],
+        };
+      }
+
+      db.transaction(() => {
+        // Deleta produtos existentes para a loja
+        db.prepare(`DELETE FROM products WHERE store_id = ?`).run(
+          configs.stores[0]
+        );
+
+        // Prepara a Instrução de Inserção
+        const insertProduct = db.prepare(`
+        INSERT OR REPLACE INTO products (
+          id, store_id, product_id, name, price, discount, real_price, image_url, 
+          quantity, unit_type, pum, stock, navigation
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+
+        // Inserção em Lote de Produtos
+        const insertMany = db.transaction((products: IProduct[]) => {
+          for (const product of products) {
+            insertProduct.run(
+              product.id,
+              configs.stores[0],
+              product.product_id,
+              product.name,
+              product.price,
+              product.discount,
+              product.real_price,
+              product.image_url,
+              product.quantity,
+              product.unit_type,
+              product.pum,
+              product.stock,
+              JSON.stringify(product.navigation) // Considere otimizar o armazenamento, se possível
+            );
+          }
+        });
+
+        insertMany(uniqueProducts);
+
+        // if (!onlyRead) {
+
+        //   const insertStoreProducts = db.prepare(`
+        //   INSERT OR REPLACE INTO storeProducts (store_id, array_products_string)
+        //   VALUES (?, ?)
+        // `);
+
+        //   insertStoreProducts.run(
+        //     configs.stores[0],
+        //     JSON.stringify(uniqueProducts)
+        //   );
+        // }
+      })();
+
+      const productsStmt = db.prepare(`
+      SELECT *, 
+        CASE 
+          WHEN discount >= 0.8 THEN 80
+          WHEN discount >= 0.6 THEN 60
+          WHEN discount >= 0.4 THEN 40
+          WHEN discount >= 0.1 THEN 10
+          ELSE 0
+        END AS discount_range
+      FROM products
+      WHERE store_id = ? AND discount > 0
+      ORDER BY discount DESC
+    `);
+
+      const products: any = productsStmt.all(configs.stores[0]);
+
+      const rangeProducts: any = {
+        store_id: configs.stores[0],
+        products_count: products.length,
+        all: products,
+        80: [],
+        60: [],
+        40: [],
+        10: [],
+        0: [],
+      };
+
+      for (const product of products) {
+        rangeProducts[product.discount_range].push(product);
+      }
+
+      return rangeProducts;
+    } catch (error) {
+      console.error("Erro em getAllStoreProductOffers:", error);
+      throw error;
+    }
   }
 
   static async getNewProductsStore({ configs }: { configs: IConfigs }) {

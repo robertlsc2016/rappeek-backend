@@ -19,6 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+import compression from 'compression';
 
 // Documentação Swagger
 const swaggerOptions = { explorer: true };
@@ -34,6 +35,7 @@ app.use("/store", storeRouter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.use(compression())
 
 if (os.platform() == "linux") {
   const sslOptions = {
