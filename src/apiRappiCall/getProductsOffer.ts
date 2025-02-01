@@ -15,23 +15,31 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
 
     const results = await Promise.all(
       contexts.map(async (context) => {
-        return (
-          (await Axios.post(
-            base_url,
-            {
-              state: configs.state,
-              stores: [configs.stores[0]],
-              context: context.context,
-              limit: context.limit,
-            },
-            { timeout: 10000 }
-          )) || []
-        );
+        return await Axios.post(
+          base_url,
+          {
+            state: configs.state,
+            stores: [configs.stores[0]],
+            context: context.context,
+            limit: context.limit,
+          },
+          { timeout: 10000 }
+        ).catch((err) => {
+          console.log(err);
+          throw {
+            message: "erro ao coletar os produtos em oferta na api do rappi",
+            status: 404,
+            err: err,
+          };
+        });
       })
     );
 
     if (results[0].status == 204 && results[1].status == 204) {
-      throw new Error("está loja não existe na base de dados da rappi");
+      throw {
+        message: "loja não encontrada na base de dados da rappi",
+        status: 204,
+      };
     }
 
     const _result = [
@@ -41,8 +49,6 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
 
     return _result;
   } catch (err) {
-    throw new Error(
-      `[message: erro ao buscar produtos na api do rappi] [error: ${err} ]`
-    );
+    throw err;
   }
 };

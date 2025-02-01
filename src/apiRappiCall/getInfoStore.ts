@@ -1,3 +1,4 @@
+import { console } from "inspector/promises";
 import Axios from "../axios/axiosInstance";
 
 interface StoreInfos {
@@ -18,14 +19,22 @@ export const getInfoStore = async ({
   store_id: number;
 }): Promise<StoreInfos | any> => {
   try {
-    const { data } = await Axios.get<StoreInfos | any>(
+    const { data } = await Axios.get(
       `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${store_id}/`
-    );
-    
-    if (data["error_backend_stores-router-id"].http_status_code == 404) {
-      throw new Error(
-        `[message: erro ao se comunicar com a api de rappi para busca de informações da loja] [error: loja não encontrada. revise o store_id]`
-      );
+    ).catch((err) => {
+      throw {
+        message: "erro ao coletar informacoes da loja com a api do rappi",
+        status: 502,
+        error: err,
+      };
+    });
+
+    if (data["error_backend_stores-router-id"]?.http_status_code == 404) {
+      throw {
+        message: `loja não encontrada na base de dados na api da rappi`,
+        status: 404,
+        error: "",
+      };
     }
 
     const filteredStoreInfo: StoreInfos = {
@@ -38,8 +47,6 @@ export const getInfoStore = async ({
 
     return filteredStoreInfo;
   } catch (err: any) {
-    throw new Error(
-      `${err.message}`
-    );
+    throw err;
   }
 };

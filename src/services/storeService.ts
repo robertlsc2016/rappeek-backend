@@ -21,7 +21,7 @@ export class StoreService {
       const infosStore = await getInfoStore({ store_id: store_id });
       return infosStore;
     } catch (err: any) {
-      throw new Error(`${err.message}`);
+      throw err;
     }
   }
 
@@ -43,7 +43,7 @@ export class StoreService {
       });
       return productsByRangeSorted;
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   }
 
@@ -87,7 +87,7 @@ export class StoreService {
       const _geoLocation = await getGeolocation({ place_id: place_id });
       return _geoLocation;
     } catch (err: any) {
-      throw new Error(err.message);
+      throw err;
     }
   };
 

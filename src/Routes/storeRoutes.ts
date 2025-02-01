@@ -44,7 +44,15 @@ router.post(
 
 router.post("/searchLocations", storeController.searchLocationsController);
 
-router.post("/getGeolocation", storeController.getGeolocation);
+router.post(
+  "/getGeolocation",
+  validate(
+    Joi.object({
+      place_id: Joi.string().strict().required(),
+    })
+  ),
+  storeController.getGeolocation
+);
 
 router.post("/getStoresByLocation", storeController.getStoresByLocation);
 

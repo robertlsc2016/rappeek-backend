@@ -1,4 +1,3 @@
-import { response } from "express";
 // controllers/userController.ts
 import { Request, Response } from "express";
 import { StoreService } from "../services/storeService";
@@ -10,7 +9,7 @@ export class storeController {
       const store = await StoreService.getInfoStoreService({ store_id });
       res.status(200).json(store);
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      res.status(err.status).json(err);
     }
   }
 
@@ -38,7 +37,7 @@ export class storeController {
 
       return res.status(200).json(products);
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      res.status(err.status).json(err);
     }
   }
 
@@ -86,7 +85,7 @@ export class storeController {
       });
       res.status(200).json(geolocation);
     } catch (err: any) {
-      res.status(500).json({ message: err.message });
+      res.status(err.status).json(err);
     }
   }
 
