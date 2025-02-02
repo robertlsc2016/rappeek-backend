@@ -1,3 +1,7 @@
+import {
+  IProductGlobal,
+  IStoresProductsGlobalSearch,
+} from "./../interfaces/IProduct";
 import Axios from "../axios/axiosInstance";
 
 export const getGlobalSearchProducts = async ({
@@ -6,19 +10,29 @@ export const getGlobalSearchProducts = async ({
   lng,
 }: {
   query: string;
-  lat: any;
-  lng: any;
-}) => {
-  const base_url = `https://services.rappi.com.br/api/pns-global-search-api/v1/unified-search?is_prime=true&unlimited_shipping=true`;
+  lat: number;
+  lng: number;
+}) : Promise<IStoresProductsGlobalSearch[]> => {
+  try {
+    const base_url = `https://services.rappi.com.br/api/pns-global-search-api/v1/unified-search?is_prime=true&unlimited_shipping=true`;
 
-  const getGlobalProducts: any = await Axios.post(base_url, {
-    params: { is_prime: true, unlimited_shipping: true },
-    tiered_stores: [],
-    lat: lat,
-    lng: lng,
-    query: query,
-    options: {},
-  });
+    const {
+      data: { stores: getGlobalProducts },
+    } = await Axios.post(base_url, {
+      params: { is_prime: true, unlimited_shipping: true },
+      tiered_stores: [],
+      lat: lat,
+      lng: lng,
+      query: query,
+      options: {},
+    });
 
-  return getGlobalProducts.data.stores;
+    return getGlobalProducts;
+  } catch (err) {
+    throw {
+      message: "erro ao fazer a buscar global na api do rappi",
+      status: 503,
+      error: err,
+    };
+  }
 };

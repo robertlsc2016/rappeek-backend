@@ -14,39 +14,39 @@ export const reorderProductsByRange = async ({
 }> => {
   try {
     const discountRanges: { [key: string]: [number, number] } = {
-      "80": [0.8, 1], // Desconto >= 80%
-      "60": [0.6, 0.8], // Desconto entre 60% e 79.9%
-      "40": [0.4, 0.6], // Desconto entre 40% e 59.9%
-      "10": [0.1, 0.4], // Desconto entre 10% e 39.9%
-      "0": [0, 0.1], // Desconto < 10%
+      "80": [0.8, 1],
+      "60": [0.6, 0.8],
+      "40": [0.4, 0.6],
+      "10": [0.1, 0.4],
+      "0": [0, 0.1],
     };
 
-    const rangeProducts = products.reduce(
-      (acc: any, product: any) => {
-        for (const [key, [min, max]] of Object.entries(discountRanges)) {
-          if (product.discount >= min && product.discount < max) {
-            acc[key].push(product);
-            break;
-          }
+    // Inicializa as categorias de desconto
+    const rangeProducts: any = {
+      store_id,
+      products_count: products.length,
+      all: products,
+      "80": [] as IProduct[],
+      "60": [] as IProduct[],
+      "40": [] as IProduct[],
+      "10": [] as IProduct[],
+      "0": [] as IProduct[],
+    };
+
+    // Itera sobre os produtos já ordenados de forma decrescente
+    products.forEach((product) => {
+      for (const [key, [min, max]] of Object.entries(discountRanges)) {
+        if (product.discount >= min && product.discount < max) {
+          rangeProducts[key].push(product);
+          break; // Encerra o loop após encontrar o intervalo correto
         }
-        return acc;
-      },
-      {
-        store_id,
-        products_count: products.length,
-        all: products,
-        "80": [] as IProduct[],
-        "60": [] as IProduct[],
-        "40": [] as IProduct[],
-        "10": [] as IProduct[],
-        "0": [] as IProduct[],
       }
-    );
+    });
 
     return rangeProducts;
   } catch (err) {
     throw {
-      message: "erro ao reordenar os produtos recebidos da api",
+      message: "Erro ao reordenar os produtos recebidos da API",
       status: 503,
       error: err,
     };

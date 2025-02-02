@@ -14,7 +14,7 @@ export const clearRequest = async (data: any) => {
     );
 
     const productsReorderCresc = uniqueProducts.sort(
-      (a: IProduct, b: IProduct) => a.price - b.price
+      (a: IProduct, b: IProduct) => b.discount - a.discount
     );
 
     return productsReorderCresc;

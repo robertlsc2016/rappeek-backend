@@ -1,38 +1,52 @@
+import {
+  IProduct,
+  IProductGlobal,
+  IStoresProductsGlobalSearch,
+} from "./../interfaces/IProduct";
 export const filterProductsStoresGlobalSearch = async ({
   globalStoresProducts,
 }: {
-  globalStoresProducts: any;
+  globalStoresProducts: IStoresProductsGlobalSearch[];
 }) => {
-  const filteredArray = globalStoresProducts.map((store: any) => ({
-    id: store.store_id,
-    name: store.store_name,
-    store_image: store.logo,
-    products: store.products
-      .filter(
-        (product: any) =>
-          product.id &&
-          product.name &&
-          product.image &&
-          product.balance_price &&
-          product.real_price &&
-          product.price &&
-          product.unit_type &&
-          product.quantity &&
-          product.stock
-      )
-      .sort((a: any, b: any) => a.price - b.price) // Ordena pelo preço (do mais barato ao mais caro)
-      .map((product: any) => ({
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        balance_price: product.balance_price,
-        real_price: product.real_price,
-        price: product.price,
-        unit_type: product.unit_type,
-        quantity: product.quantity,
-        stock: product.stock,
-      })),
-  }));
+  const filteredArray = globalStoresProducts.map(
+    (store: IStoresProductsGlobalSearch) => ({
+      id: store.store_id,
+      name: store.store_name,
+      store_image: store.logo,
+      products: store.products
+        .filter(
+          (product: IProductGlobal) =>
+            product.id &&
+            product.name &&
+            product.price &&
+            product.discount &&
+            product.real_price &&
+            product.image &&
+            product.quantity &&
+            product.unit_type &&
+            product.product_id &&
+            product.pum &&
+            product.stock
+        )
+        .sort((a: IProductGlobal, b: IProductGlobal) => a.price - b.price)
+        .map((product: IProductGlobal) => ({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+
+          discount: product.discount,
+          real_price: product.real_price,
+          image: product.image,
+
+          quantity: product.quantity,
+          unit_type: product.unit_type,
+          product_id: product.product_id,
+
+          pum: product.pum,
+          stock: product.stock,
+        })),
+    })
+  );
 
   return filteredArray;
 };
