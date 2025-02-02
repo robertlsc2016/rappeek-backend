@@ -1,6 +1,5 @@
 # Use a imagem oficial do Node.js com a versão mais recente
-FROM node:current-bullseye-slim
-
+FROM node:23-slim
 # Atualize os pacotes e instale o Git
 RUN apt-get update && apt-get install -y \
     git \
