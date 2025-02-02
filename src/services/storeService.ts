@@ -1,7 +1,6 @@
 import { cleanHtmlFromAmazon } from "./../utils/cleanHtmlFromAmazon";
 import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
 import { IConfigs } from "../interfaces/IConfigs";
-import axios from "axios";
 import { getProductsOffer } from "../apiRappiCall/getProductsOffer";
 import { clearRequest } from "../utils/reorderProductsInOffer";
 import { getGeolocation } from "../apiRappiCall/getGeolocation";
@@ -43,6 +42,7 @@ export class StoreService {
         products: cleanRequest,
         store_id: store_id,
       });
+
       return productsByRangeSorted;
     } catch (err: any) {
       throw err;

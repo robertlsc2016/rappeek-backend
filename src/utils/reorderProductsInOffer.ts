@@ -1,3 +1,4 @@
+import { IProduct } from "./../interfaces/IProduct";
 import { filterProducts } from "./filterProducts";
 const _ = require("lodash");
 
@@ -12,10 +13,16 @@ export const clearRequest = async (data: any) => {
       (product: any) => product.discount > 0
     );
 
-    return uniqueProducts;
-  } catch (err) {
-    throw new Error(
-      `[message: erro ao limpar dados recebidos da rappi] [error: ${err} ]`
+    const productsReorderCresc = uniqueProducts.sort(
+      (a: IProduct, b: IProduct) => a.price - b.price
     );
+
+    return productsReorderCresc;
+  } catch (err) {
+    throw {
+      message: "erro ao limpar dados recebidos da rappi",
+      status: 503,
+      error: err,
+    };
   }
 };

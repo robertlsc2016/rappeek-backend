@@ -45,6 +45,10 @@ export const reorderProductsByRange = async ({
 
     return rangeProducts;
   } catch (err) {
-    throw new Error("erro ao reordenar os produtos recebidos da api");
+    throw {
+      message: "erro ao reordenar os produtos recebidos da api",
+      status: 503,
+      error: err,
+    };
   }
 };
