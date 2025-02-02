@@ -6,8 +6,6 @@ export const getGeolocation = async ({ place_id }: { place_id: string }) => {
       `https://services.rappi.com.br/api/ms/address/place-details?placeid=${place_id}&source=locationservices&raw=false&strictbounds=true`
     );
 
-    console.log(location);
-
     const filterLocation = {
       address: location.original_text,
       geolocation: {
