@@ -1,13 +1,4 @@
 services:
-  dozzle:
-    image: ghcr.io/amir20/dozzle:latest
-    container_name: dozzle
-    restart: always
-    ports:
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
   rappi:
     build:
       context: .
