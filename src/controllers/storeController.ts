@@ -18,13 +18,16 @@ export class storeController {
     req: Request,
     res: Response
   ): Promise<void | any> {
-    const configs = req.body;
+    const { parent_store_type, store_type, store_id } = req.body;
+    let configs = {
+      parent_store_type: parent_store_type,
+      store_type: store_type,
+      store_id: store_id
+    }
 
     try {
       const products = await StoreService.getAllStoreProductOffers({
         configs: configs,
-        onlyRead: false,
-        firstRequestDay: false,
       });
 
       if (products.status === 204) {

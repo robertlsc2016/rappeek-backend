@@ -6,221 +6,230 @@
     "version": "1.0.0"
   },
   "basePath": "/",
-  "schemes": [
-    "http",
-    "https"
-  ],
+  "schemes": ["http", "https"],
   "paths": {
-    "/store/": {
+    "/": {
       "get": {
-        "description": "",
+        "summary": "status da api",
+        "description": "verificar status da api",
         "responses": {
-          "200": {
-            "description": "OK"
-          }
+          "200": { "description": "OK" }
         }
       }
     },
     "/store/getInfoStore": {
       "post": {
-        "description": "",
+        "summary": "buscar informações de uma loja",
+        "description": "buscar informações de uma loja",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "store_id": {
-                  "example": "any"
+                  "type": "number",
+                  "example": "900604367",
+                  "description": "The unique identifier for the store."
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" }
         }
       }
     },
     "/store/products_offer": {
       "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
+        "summary": "produtos em oferta da loja",
+        "description": "Recuperar a lista de produtos em oferta da loja",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "store_id": {
+                  "type": "number",
+                  "example": "900604367",
+                  "description": "The unique identifier for the store."
+                }
+              }
+            }
           }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "404": { "description": "Not Found" }
         }
       }
     },
     "/store/globalSearchProducts": {
       "post": {
-        "description": "",
+        "summary": "Search for products globally",
+        "description": "Searches for products available in multiple locations.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "query": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "laptop",
+                  "description": "The search query for products."
                 },
                 "lat": {
-                  "example": "any"
+                  "type": "number",
+                  "example": -23.5505,
+                  "description": "Latitude for location-based search."
                 },
                 "lng": {
-                  "example": "any"
+                  "type": "number",
+                  "example": -46.6333,
+                  "description": "Longitude for location-based search."
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/store/searchLocations": {
       "post": {
-        "description": "",
+        "summary": "Search for store locations",
+        "description": "Finds stores based on a search query.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "query": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "supermarket",
+                  "description": "Search term for store locations."
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/store/getGeolocation": {
       "post": {
-        "description": "",
+        "summary": "Get geolocation from place ID",
+        "description": "Retrieves latitude and longitude for a given place ID.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "place_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "ChIJd8BlQ2BZwokRAFUEcm_qrcA",
+                  "description": "Google Maps place ID."
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" }
         }
       }
     },
     "/store/getStoresByLocation": {
       "post": {
-        "description": "",
+        "summary": "Find stores by location",
+        "description": "Finds stores near a given latitude and longitude.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "lat": {
-                  "example": "any"
+                  "type": "number",
+                  "example": -23.5505,
+                  "description": "Latitude of the location."
                 },
                 "lng": {
-                  "example": "any"
+                  "type": "number",
+                  "example": -46.6333,
+                  "description": "Longitude of the location."
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     },
     "/store/getSimilarOnAmazon": {
       "post": {
-        "description": "",
+        "summary": "Find similar products on Amazon",
+        "description": "Searches for similar products on Amazon based on a given product name.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "product_name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "iPhone 13",
+                  "description": "Name of the product to search on Amazon."
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
+          "200": { "description": "OK" },
+          "400": { "description": "Bad Request" }
         }
       }
     },
     "/store/clearDataBase": {
       "get": {
-        "description": "",
+        "summary": "Clear database",
+        "description": "Clears the database of stored data.",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
         }
       }
     }

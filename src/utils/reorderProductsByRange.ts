@@ -1,4 +1,6 @@
+import { IProductsOfferByRange } from "../interfaces/IProductsOffer";
 import { IProduct } from "./../interfaces/IProduct";
+
 
 export const reorderProductsByRange = async ({
   products,
@@ -6,12 +8,7 @@ export const reorderProductsByRange = async ({
 }: {
   products: IProduct[];
   store_id: number;
-}): Promise<{
-  store_id: number;
-  products_count: number;
-  all: IProduct[];
-  [key: string]: IProduct[] | number;
-}> => {
+}): Promise<IProductsOfferByRange> => {
   try {
     const discountRanges: { [key: string]: [number, number] } = {
       "80": [0.8, 1],
@@ -22,7 +19,7 @@ export const reorderProductsByRange = async ({
     };
 
     // Inicializa as categorias de desconto
-    const rangeProducts: any = {
+    const rangeProducts: IProductsOfferByRange | any= {
       store_id,
       products_count: products.length,
       all: products,

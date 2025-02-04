@@ -30,6 +30,10 @@ app.use(
 
 app.use("/store", storeRouter);
 
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'live', http_status: 200 });
+});
+
 if (os.platform() == "linux") {
   const sslOptions = {
     key: fs.readFileSync(process.env.PRIVATE_KEY || ""),

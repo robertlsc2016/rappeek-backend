@@ -4,13 +4,11 @@ import { Router, Request, Response, response } from "express";
 
 import Joi from "joi";
 import { storeController } from "../controllers/storeController";
-import { storeSchema } from "../schemas/storesSchema";
+import { bodyProductsOfferSchema, globalSearchProductsSchema, searchLocationsSchema, similarOnAmazonSchema, storeIdSchema } from "../schemas/storesSchema";
 
 const router = Router();
 
-const userValidationSchema = Joi.object({
-  store_id: Joi.number().strict().required(),
-});
+
 
 router.get("/", (req, res) => {
   res.status(200).json("hello world");
@@ -18,29 +16,22 @@ router.get("/", (req, res) => {
 
 router.post(
   "/getInfoStore",
-  validate(userValidationSchema),
+  validate(storeIdSchema),
   storeController.getInfoStore
 );
 
 router.post(
   "/products_offer",
-  validate(storeSchema),
+  validate(bodyProductsOfferSchema),
   storeController.getAllStoreProductOffers
 );
 
 router.post(
   "/globalSearchProducts",
-  validate(
-    Joi.object({
-      query: Joi.string().strict().required(),
-      lat: Joi.number().strict().required(),
-      lng: Joi.number().strict().required(),
-    })
-  ),
+  validate(globalSearchProductsSchema),
   storeController.globalSearchProducts
 );
 
-// router.post("/getNewProductsStore", storeController.getNewProductsStoreController);
 
 router.post("/searchLocations", storeController.searchLocationsController);
 
@@ -54,15 +45,13 @@ router.post(
   storeController.getGeolocation
 );
 
-router.post("/getStoresByLocation", storeController.getStoresByLocation);
+router.post("/getStoresByLocation", validate(
+  searchLocationsSchema
+), storeController.getStoresByLocation);
 
 router.post(
   "/getSimilarOnAmazon",
-  validate(
-    Joi.object({
-      product_name: Joi.string().strict().required(),
-    })
-  ),
+  validate(similarOnAmazonSchema),
   storeController.getSimilarOnAmazon
 );
 

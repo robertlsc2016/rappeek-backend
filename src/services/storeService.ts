@@ -29,11 +29,11 @@ export class StoreService {
   static async getAllStoreProductOffers({
     configs,
   }: {
-    onlyRead: boolean;
     configs: IConfigs;
-    firstRequestDay: boolean;
   }): Promise<IStoreProductOffer | any> {
-    const store_id = configs.stores[0];
+    
+    const store_id = configs.store_id;
+
     try {
       const fetchProductsInOffer = await getProductsOffer({ configs: configs });
       const cleanRequest = await clearRequest(fetchProductsInOffer);

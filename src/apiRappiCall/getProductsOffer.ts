@@ -4,6 +4,16 @@ const _ = require("lodash");
 
 // FAZ A CHAMADA PARA O RAPPI E RETORNA A CHAMADA BRUTA
 export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
+
+  const bodyReq = {
+    state: {
+      parent_store_type: configs.parent_store_type,
+      store_type: configs.store_type
+    },
+    stores: [configs.store_id],
+
+  }
+
   try {
     const base_url =
       "https://services.rappi.com.br/api/web-gateway/web/dynamic/context/content/";
@@ -18,10 +28,8 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
         return await Axios.post(
           base_url,
           {
-            state: configs.state,
-            stores: [configs.stores[0]],
-            context: context.context,
-            limit: context.limit,
+            ...bodyReq,
+            ...context
           },
           { timeout: 10000 }
         ).catch((err) => {
