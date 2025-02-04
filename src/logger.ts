@@ -12,7 +12,7 @@ logger.add(new winston.transports.Console({
             format: 'DD-MM-YYYY hh:mm:ss.SSS A',
         }),
         align(),
-        printf((info: any) => `\n[ERROR] [${info.timestamp}] ${info.level}: ${info.message}\nerror details: ${String(info.error.stack)}`)
+        printf((info: any) => `\n[ERROR] [${info.timestamp}] ${info.level}: ${info?.message}\nerror details: ${String(info?.error?.stack)}`)
     )
 }));
 
