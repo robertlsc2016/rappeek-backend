@@ -25,11 +25,10 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
           },
           { timeout: 10000 }
         ).catch((err) => {
-          console.log(err);
           throw {
             message: "erro ao coletar os produtos em oferta na api do rappi",
             status: 404,
-            err: err,
+            error: err,
           };
         });
       })
@@ -39,6 +38,7 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
       throw {
         message: "loja não encontrada na base de dados da rappi",
         status: 204,
+        error: "loja não encontrada na base de dados da rappi"
       };
     }
 
@@ -46,7 +46,6 @@ export const getProductsOffer = async ({ configs }: { configs: IConfigs }) => {
       results[0].data.data.components,
       results[1].data.data.components,
     ];
-
     return _result;
   } catch (err) {
     throw err;

@@ -1,7 +1,7 @@
 // controllers/userController.ts
 import { Request, Response } from "express";
 import { StoreService } from "../services/storeService";
-
+import { logger } from "../logger";
 export class storeController {
   static async getInfoStore(req: Request, res: Response) {
     try {
@@ -9,6 +9,7 @@ export class storeController {
       const store = await StoreService.getInfoStoreService({ store_id });
       res.status(200).json(store);
     } catch (err: any) {
+      logger.log("error", err)
       res.status(err.status).json(err);
     }
   }
@@ -37,6 +38,7 @@ export class storeController {
 
       return res.status(200).json(products);
     } catch (err: any) {
+      logger.log("error", err)
       res.status(err.status).json(err);
     }
   }
@@ -51,6 +53,7 @@ export class storeController {
       });
       res.status(200).json(products);
     } catch (err: any) {
+      logger.log("error", err)
       res.status(500).json({ message: err.message });
     }
   }
@@ -72,6 +75,7 @@ export class storeController {
       });
       res.status(200).json(locations);
     } catch (err: any) {
+      logger.log("error", err)
       res.status(500).json({ message: err.message });
     }
   }
@@ -85,6 +89,7 @@ export class storeController {
       });
       res.status(200).json(geolocation);
     } catch (err: any) {
+      logger.log("error", err)
       res.status(err.status).json(err);
     }
   }
@@ -98,6 +103,7 @@ export class storeController {
       });
       res.status(200).json(store_by_location);
     } catch (err: any) {
+      logger.log("error", err)
       res.status(500).json({ message: err.message });
     }
   }
@@ -111,18 +117,8 @@ export class storeController {
       });
       return res.status(200).json(products_amazon);
     } catch (err: any) {
+      logger.log("error", err)
       res.status(err.status).json(err);
     }
   }
-
-  // static async addStores(req: Request, res: Response) {
-  //   try {
-  //     const markets = await StoreService.addStores();
-  //     res
-  //       .status(200)
-  //       .json({ message: "Markets added successfully", data: markets });
-  //   } catch (err: any) {
-  //     res.status(500).json({ message: err.message });
-  //   }
-  // }
 }

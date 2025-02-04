@@ -27,12 +27,13 @@ export const getStoresByLocation = async ({
       return {
         status: 204,
         message: "não existem lojas dispoíveis para sua localidade",
+        error: "não existem lojas dispoíveis para sua localidade",
       };
     }
 
     const stract_stores = data.data.data.context_info.stores;
     return stract_stores;
-  } catch (err) {
-    throw new Error(`erro ao encontrar lojas de acordo com a localizacao: ${err}`);
+  } catch (err: any) {
+    throw err
   }
 };

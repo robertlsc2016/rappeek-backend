@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import { router as storeRouter } from "./Routes/storeRoutes";
 import swaggerDocument from "./swagger/swagger-output.json";
+import compression from 'compression';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-import compression from 'compression';
+app.use(compression())
 
 // Documentação Swagger
 const swaggerOptions = { explorer: true };
@@ -27,13 +28,7 @@ app.use(
   swaggerUi.setup(swaggerDocument, swaggerOptions)
 );
 
-// Rotas
 app.use("/store", storeRouter);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cors());
-app.use(compression())
 
 if (os.platform() == "linux") {
   const sslOptions = {
