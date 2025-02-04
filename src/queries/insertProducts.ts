@@ -22,7 +22,7 @@ export const insertProducts = async ({
       for (const product of products) {
         insertProduct.run(
           product.id,
-          configs.stores[0],
+          configs.store_id,
           product.product_id,
           product.name,
           product.price,

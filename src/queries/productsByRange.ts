@@ -16,7 +16,7 @@ export const productsByRange = async ({ configs }: { configs: IConfigs }) => {
       ORDER BY discount DESC
     `);
 
-  const products: any = productsStmt.all(configs.stores[0]);
+  const products: any = productsStmt.all(configs.store_id);
 
   return products;
 };

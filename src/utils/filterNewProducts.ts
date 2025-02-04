@@ -7,14 +7,12 @@ import db from "../createDatabase";
  * @param configs - Configurações contendo informações da loja.
  */
 export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
-  const storeId = configs.stores[0];
+  const storeId = configs.store_id;
 
   const newProductsFromDb = await getNewProducts(storeId);
 
   const liveProductsStore = await StoreService.getAllStoreProductOffers({
     configs,
-    onlyRead: true,
-    firstRequestDay: false,
   });
 
   // Obtém os produtos antigos armazenados no banco
