@@ -1,8 +1,9 @@
 // controllers/userController.ts
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { StoreService } from "../services/storeService";
 import { logger } from "../logger";
-export class storeController {
+import { VError } from "verror";
+export class StoreController {
   static async getInfoStore(req: Request, res: Response) {
     try {
       const { store_id } = req.body;
@@ -70,16 +71,36 @@ export class storeController {
     }
   }
 
-  static async searchLocationsController(req: Request, res: Response) {
-    const { query } = req.body;
+
+
+  static async getSimilarOnAmazon(req: Request, res: any) {
+    const { product_name } = req.body;
+
     try {
-      const locations = await StoreService.searchLocationsService({
-        query: query,
+      const products_amazon = await StoreService.fetchSimilarOnAmazon({
+        product_name: product_name,
       });
-      res.status(200).json(locations);
+      return res.status(200).json(products_amazon);
     } catch (err: any) {
       logger.log("error", err)
-      res.status(500).json({ message: err.message });
+      res.status(err.status).json(err);
+    }
+  }
+
+
+
+  static async searchLocationsController(req: Request, res: any) {
+    const { query } = req.body;
+
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({ error: "Query é obrigatória e deve ser uma string." });
+    }
+
+    try {
+      const locations = await StoreService.searchLocationsService({ query });
+      res.status(200).json(locations);
+    } catch (err: any) {
+      res.status(err.status || 500).json(err || "erro não definido");
     }
   }
 
@@ -108,20 +129,6 @@ export class storeController {
     } catch (err: any) {
       logger.log("error", err)
       res.status(500).json({ message: err.message });
-    }
-  }
-
-  static async getSimilarOnAmazon(req: Request, res: any) {
-    const { product_name } = req.body;
-
-    try {
-      const products_amazon = await StoreService.fetchSimilarOnAmazon({
-        product_name: product_name,
-      });
-      return res.status(200).json(products_amazon);
-    } catch (err: any) {
-      logger.log("error", err)
-      res.status(err.status).json(err);
     }
   }
 }

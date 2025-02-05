@@ -1,5 +1,5 @@
 import db from "../createDatabase";
-import { IConfigs } from "../interfaces/IConfigs";
+import { IConfigs } from "../interfaces/body_requests/IConfigs";
 
 export const productsByRange = async ({ configs }: { configs: IConfigs }) => {
   const productsStmt = db.prepare(`

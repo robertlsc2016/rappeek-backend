@@ -1,6 +1,6 @@
 import db from "../createDatabase";
-import { IConfigs } from "../interfaces/IConfigs";
-import { IProduct } from "../interfaces/IProduct";
+import { IConfigs } from "../interfaces/body_requests/IConfigs";
+import { IProduct } from "../interfaces/returns/IProduct";
 
 export const insertProducts = async ({
   configs,

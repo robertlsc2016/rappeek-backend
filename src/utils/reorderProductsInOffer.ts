@@ -1,4 +1,4 @@
-import { IProduct } from "./../interfaces/IProduct";
+import { IProduct } from "../interfaces/returns/IProduct";
 import { filterProducts } from "./filterProducts";
 const _ = require("lodash");
 

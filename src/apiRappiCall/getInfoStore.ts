@@ -1,11 +1,11 @@
 import Axios from "../axios/axiosInstance";
-import { IBodyInfosStoreReturn, IInfosStoreResponse } from "../interfaces/IInfosStore";
+import { IBodyInfosStoreReturn, IInfosStoreResponse } from "../interfaces/returns/IInfosStore";
 
 export const getInfoStore = async ({
   store_id,
 }: {
   store_id: number;
-}): Promise<IBodyInfosStoreReturn | any> => {
+}): Promise<IBodyInfosStoreReturn> => {
   try {
     const { data: infosStoreRespose }: { data: IInfosStoreResponse } = await Axios.get(
       `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${store_id}/`

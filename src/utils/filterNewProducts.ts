@@ -1,11 +1,7 @@
-import { IConfigs } from "../interfaces/IConfigs";
+import { IConfigs } from "../interfaces/body_requests/IConfigs";
 import { StoreService } from "../services/storeService";
 import db from "../createDatabase";
 
-/**
- * Filtra os novos produtos da loja, comparando os produtos atuais com os dados no banco de dados.
- * @param configs - Configurações contendo informações da loja.
- */
 export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
   const storeId = configs.store_id;
 
@@ -15,7 +11,6 @@ export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
     configs,
   });
 
-  // Obtém os produtos antigos armazenados no banco
   const oldProducts = await getOldProducts(storeId);
 
   if (oldProducts.length === 0) {
@@ -23,7 +18,6 @@ export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
     return createResponse(storeId, []);
   }
 
-  // Produtos únicos: presentes em liveProductsStore.all, mas não em oldProducts
   const uniqueProducts = liveProductsStore.all.filter(
     (product: any) =>
       !oldProducts.some((oldProduct: any) =>
@@ -31,7 +25,6 @@ export const filterNewProducts = async ({ configs }: { configs: IConfigs }) => {
       )
   );
 
-  // Combina produtos únicos com aqueles já armazenados no banco, evitando duplicados
   const combinedProducts = uniqueProducts.filter(
     (product: any) =>
       !newProductsFromDb.some((newProduct: any) =>
@@ -57,11 +50,7 @@ const isProductEqual = (product1: any, product2: any): boolean => {
   return product1.id === product2.id && product1.price === product2.price;
 };
 
-/**
- * Obtém os produtos antigos do banco de dados.
- * @param storeId - ID da loja.
- * @returns Lista de produtos antigos.
- */
+
 const getOldProducts = (storeId: number) => {
   const stmt = db.prepare(`SELECT * FROM storeProducts WHERE store_id = ?`);
   const result: any = stmt.get(storeId);
@@ -70,22 +59,14 @@ const getOldProducts = (storeId: number) => {
     : [];
 };
 
-/**
- * Obtém os novos produtos do banco de dados.
- * @param storeId - ID da loja.
- * @returns Lista de novos produtos.
- */
+
 const getNewProducts = (storeId: number) => {
   const stmt = db.prepare("SELECT * FROM newProductsStore WHERE store_id = ?");
   const result: any = stmt.get(storeId);
   return result;
 };
 
-/**
- * Atualiza os novos produtos no banco de dados.
- * @param storeId - ID da loja.
- * @param products - Lista de produtos para atualizar.
- */
+
 const updateNewProducts = async (storeId: number, products: any[]) => {
   const stmt = db.prepare(
     "INSERT OR REPLACE INTO newProductsStore (store_id, array_products_string) VALUES (?, ?)"
@@ -93,13 +74,6 @@ const updateNewProducts = async (storeId: number, products: any[]) => {
   return stmt.run(storeId, JSON.stringify(products, null, 0));
 };
 
-/**
- * Cria a resposta para a função principal.
- * @param storeId - ID da loja.
- * @param products - Lista de produtos.
- * @param createdAt - Data de criação (opcional).
- * @returns Objeto de resposta.
- */
 const createResponse = (storeId: number, products: any[], createdAt?: Date) => {
   return {
     store_id: storeId,

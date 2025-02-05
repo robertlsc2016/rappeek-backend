@@ -1,5 +1,5 @@
-import { IProductsOfferByRange } from "../interfaces/IProductsOffer";
-import { IProduct } from "./../interfaces/IProduct";
+import { IProductsOfferByRange } from "../interfaces/returns/IProductsOffer";
+import { IProduct } from "../interfaces/returns/IProduct";
 
 
 export const reorderProductsByRange = async ({

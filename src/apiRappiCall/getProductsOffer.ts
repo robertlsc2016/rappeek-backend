@@ -1,5 +1,5 @@
 import Axios from "../axios/axiosInstance";
-import { IConfigs } from "../interfaces/IConfigs";
+import { IConfigs } from "../interfaces/body_requests/IConfigs";
 const _ = require("lodash");
 
 // FAZ A CHAMADA PARA O RAPPI E RETORNA A CHAMADA BRUTA

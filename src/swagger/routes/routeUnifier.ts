@@ -1,4 +1,5 @@
-{
+const routes = [`
+  {
   "swagger": "2.0",
   "info": {
     "title": "API Filtro de ofertas do Rappi",
@@ -17,7 +18,7 @@
         }
       }
     },
-
+    
     "/store/getInfoStore": {
       "post": {
         "summary": "buscar informações de uma loja",
@@ -160,8 +161,7 @@
               "properties": {
                 "place_id": {
                   "type": "string",
-                  "example": "AQAAAGIAiagpvE8inMMC83Vu7VxBzKX35urJIyML8D8W8xIO7YLD_smOHy9P6NR5KhO1AkaU1IAm0YDngxWl5FA9MqAWyfUfAE28eAimqPbNOC7xbdUVItCXhdskWHuBxEsYSDxTkBMzp4VE3V_MJx-UOcE6IbicKZVLxTrrYGEutlHVehfZvw"
-                }
+                  "example": "AQAAAGIAiagpvE8inMMC83Vu7VxBzKX35urJIyML8D8W8xIO7YLD_smOHy9P6NR5KhO1AkaU1IAm0YDngxWl5FA9MqAWyfUfAE28eAimqPbNOC7xbdUVItCXhdskWHuBxEsYSDxTkBMzp4VE3V_MJx-UOcE6IbicKZVLxTrrYGEutlHVehfZvw"                }
               }
             }
           }
@@ -174,8 +174,8 @@
     },
     "/store/getStoresByLocation": {
       "post": {
-        "summary": "buscar lojas disponíveis de acordo com as coordenadas",
-        "description": "retorna as lojas",
+        "summary": "Find stores by location",
+        "description": "Finds stores near a given latitude and longitude.",
         "parameters": [
           {
             "name": "body",
@@ -185,13 +185,13 @@
               "type": "object",
               "properties": {
                 "lat": {
-                  "type": "string",
-                  "example": -23.56488,
+                  "type": "number",
+                  "example": -23.5505,
                   "description": "Latitude of the location."
                 },
                 "lng": {
-                  "type": "string",
-                  "example": -46.65205,
+                  "type": "number",
+                  "example": -46.6333,
                   "description": "Longitude of the location."
                 }
               }
@@ -206,7 +206,7 @@
     },
     "/store/getSimilarOnAmazon": {
       "post": {
-        "summary": "buscar itens similar a query fornecida na amazon",
+        "summary": "Find similar products on Amazon",
         "description": "Searches for similar products on Amazon based on a given product name.",
         "parameters": [
           {
@@ -233,8 +233,8 @@
     },
     "/store/clearDataBase": {
       "get": {
-        "summary": "limpar banco de dados",
-        "description": "limpa o banco de dados completamente",
+        "summary": "Clear database",
+        "description": "Clears the database of stored data.",
         "responses": {
           "200": { "description": "OK" },
           "500": { "description": "Internal Server Error" }
@@ -243,3 +243,7 @@
     }
   }
 }
+
+  
+  `]; // Adicione os caminhos corretos
+export default routes;

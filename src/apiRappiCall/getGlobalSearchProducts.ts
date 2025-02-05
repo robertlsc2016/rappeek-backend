@@ -1,7 +1,7 @@
 import {
   IProductGlobal,
   IStoresProductsGlobalSearch,
-} from "./../interfaces/IProduct";
+} from "../interfaces/returns/IProduct";
 import Axios from "../axios/axiosInstance";
 
 export const getGlobalSearchProducts = async ({

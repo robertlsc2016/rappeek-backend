@@ -1,18 +1,25 @@
-export const filterLocations = async ({ locations }: { locations: any }) => {
+import { ISearchLocationsReturn } from "../interfaces/returns/ISearchLocations";
+
+export const filterLocations = ({ locations }: { locations: any }) => {
   try {
-    const _filterLocations = locations.map(
+    const _filterLocations: ISearchLocationsReturn = locations.map(
       ({ main_text, secondary_text, place_id, source }: any) => {
         const data = {
           address: main_text,
           secondary_address: secondary_text,
           place_id: place_id,
-          source: source,
         };
         return data;
       }
     );
     return _filterLocations;
   } catch (err: any) {
-    throw new Error(`[message: erro ao filtar as localizações] [erro: ${err}]`);
+
+    throw {
+      message: "erro ao filtrar localizações recebidas da api",
+      status: 503,
+      error: err
+    }
+
   }
 };

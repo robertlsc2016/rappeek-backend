@@ -1,6 +1,5 @@
 import { cleanHtmlFromAmazon } from "./../utils/cleanHtmlFromAmazon";
-import { IStoreProductOffer } from "../interfaces/IStoreProductOffer";
-import { IConfigs } from "../interfaces/IConfigs";
+import { IConfigs } from "../interfaces/body_requests/IConfigs";
 import { getProductsOffer } from "../apiRappiCall/getProductsOffer";
 import { clearRequest } from "../utils/reorderProductsInOffer";
 import { getGeolocation } from "../apiRappiCall/getGeolocation";
@@ -14,6 +13,8 @@ import { ClearDatabase } from "../queries/clearDataBase";
 import { getGlobalSearchProducts } from "../apiRappiCall/getGlobalSearchProducts";
 import { filterLocations } from "../utils/filterLocations";
 import { getSimilarOnAmazon } from "../amazonCall/getSimilarOnAmazon";
+import { IProductsOfferByRange } from "../interfaces/returns/IProductsOffer";
+
 const cheerio = require("cheerio");
 
 export class StoreService {
@@ -30,8 +31,8 @@ export class StoreService {
     configs,
   }: {
     configs: IConfigs;
-  }): Promise<IStoreProductOffer | any> {
-    
+  }): Promise<IProductsOfferByRange | any> {
+
     const store_id = configs.store_id;
 
     try {
@@ -74,8 +75,7 @@ export class StoreService {
   static searchLocationsService = async ({ query }: { query: string }) => {
     try {
       const fetchLocations = await searchLocations({ query: query });
-
-      const _filterLocations = await filterLocations({
+      const _filterLocations = filterLocations({
         locations: fetchLocations,
       });
       return _filterLocations;
