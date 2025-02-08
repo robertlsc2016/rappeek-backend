@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: rapprappeek
+    container_name: rappeek
     restart: always
     ports:
       - "3000:3000"
