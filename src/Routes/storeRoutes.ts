@@ -5,7 +5,6 @@ import { validate } from "../middlewares/validate";
 import Joi from "joi";
 import { StoreController } from "../controllers/storeController";
 import { bodyProductsOfferSchema, globalSearchProductsSchema, searchLocationsSchema, similarOnAmazonSchema, storeIdSchema } from "../schemas/storesSchema";
-import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = Router();
 
