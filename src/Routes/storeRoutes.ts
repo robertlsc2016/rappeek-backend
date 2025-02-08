@@ -1,22 +1,21 @@
 // routes/userRoutes.ts
 import { Router } from "express";
-import { validate } from "./../middlewares/validateMiddleware";
+import { validate } from "../middlewares/validate";
 
 import Joi from "joi";
 import { StoreController } from "../controllers/storeController";
 import { bodyProductsOfferSchema, globalSearchProductsSchema, searchLocationsSchema, similarOnAmazonSchema, storeIdSchema } from "../schemas/storesSchema";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = Router();
-
-router.get("/", (req, res) => {
-  res.status(200).json("hello world");
-});
 
 router.post(
   "/getInfoStore",
   validate(storeIdSchema),
   StoreController.getInfoStore
 );
+
+
 
 router.post(
   "/products_offer",

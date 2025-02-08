@@ -2,8 +2,8 @@ import app from ".";
 import https from "https";
 import fs from "fs";
 import os from "os";
-import dotenv from "dotenv";
 
+import dotenv from "dotenv";
 dotenv.config();
 
 const PORT = 3000;

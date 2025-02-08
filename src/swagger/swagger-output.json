@@ -7,6 +7,29 @@
   },
   "basePath": "/",
   "schemes": ["http", "https"],
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Bearer token"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Login Routes",
+      "description": "Endpoints relacionados à autenticação e login"
+    },
+    {
+      "name": "Stores Routes",
+      "description": "Endpoints relacionados a lojas e produtos"
+    }
+  ],
   "paths": {
     "/": {
       "get": {
@@ -22,6 +45,8 @@
       "post": {
         "summary": "buscar informações de uma loja",
         "description": "buscar informações de uma loja",
+        "tags": ["Stores Routes"],
+
         "parameters": [
           {
             "name": "body",
@@ -49,6 +74,8 @@
       "post": {
         "summary": "produtos em oferta da loja",
         "description": "coletar a lista de produtos em oferta de uma loja",
+        "tags": ["Stores Routes"],
+
         "parameters": [
           {
             "name": "body",
@@ -85,6 +112,8 @@
     },
     "/store/globalSearchProducts": {
       "post": {
+        "tags": ["Stores Routes"],
+
         "summary": "Busca global de produtos",
         "description": "essa rota é como se fosse buscar na barra de pesquisa do rappi (precisa das cooedenadas[longitude e latitude])",
         "parameters": [
@@ -121,6 +150,8 @@
     },
     "/store/searchLocations": {
       "post": {
+        "tags": ["Stores Routes"],
+
         "summary": "buscar sugestões de localização",
         "description": "é como se fosse a barra de pesquisa de endereço do rappi e retorna os possíveis endereços",
         "parameters": [
@@ -148,6 +179,8 @@
     },
     "/store/getGeolocation": {
       "post": {
+        "tags": ["Stores Routes"],
+
         "summary": "coletar geolocalização por placeID retornado da api do rappi",
         "description": "esse endpoint retorna o endereço e latitude e longitude",
         "parameters": [
@@ -174,6 +207,8 @@
     },
     "/store/getStoresByLocation": {
       "post": {
+        "tags": ["Stores Routes"],
+
         "summary": "buscar lojas disponíveis de acordo com as coordenadas",
         "description": "retorna as lojas",
         "parameters": [
@@ -206,6 +241,8 @@
     },
     "/store/getSimilarOnAmazon": {
       "post": {
+        "tags": ["Stores Routes"],
+
         "summary": "buscar itens similar a query fornecida na amazon",
         "description": "Searches for similar products on Amazon based on a given product name.",
         "parameters": [
@@ -233,8 +270,86 @@
     },
     "/store/clearDataBase": {
       "get": {
+        "tags": ["Stores Routes"],
+
         "summary": "limpar banco de dados",
         "description": "limpa o banco de dados completamente",
+        "responses": {
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": ["Login Routes"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "nickname",
+                  "description": "nickname"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456789",
+                  "description": "senha"
+                }
+              }
+            }
+          }
+        ],
+        "summary": "executar login na aplicacao",
+        "description": "fazer login com username e password",
+        "responses": {
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "tags": ["Login Routes"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string",
+                  "example": "nickname",
+                  "description": "nickname"
+                },
+                "password": {
+                  "type": "string",
+                  "example": "123456789",
+                  "description": "senha"
+                },
+                "email": {
+                  "type": "string",
+                  "example": "teste@texte.com",
+                  "description": "seu email"
+                },
+                "name": {
+                  "type": "string",
+                  "example": "Robert",
+                  "description": "seu nome"
+                }
+              }
+            }
+          }
+        ],
+        "summary": "executar login na aplicacao",
+        "description": "fazer login com username e password",
         "responses": {
           "200": { "description": "OK" },
           "500": { "description": "Internal Server Error" }
