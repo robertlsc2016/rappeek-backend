@@ -1,9 +1,9 @@
 services:
-  rappi:
+  rappeek-backend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: rappi
+    container_name: rapprappeek
     restart: always
     ports:
       - "3000:3000"
