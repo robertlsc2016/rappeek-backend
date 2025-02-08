@@ -20,13 +20,14 @@ export const filterStores = async ({ stores }: { stores: any }) => {
   const groupMapping = {
     turbo: "turbo",
     mercados: "super",
-    farmacias: "farmacia",
-    presentes: "regalos",
-    especializadas: "especializada",
-    shopping: "hogar",
-    bebidas: "licores",
-    flores: "floristeria",
     express: "express",
+    shopping: "hogar",
+    farmacias: "farmacia",
+    especializadas: "especializada",
+    bebidas: "licores",
+    presentes: "regalos",
+    flores: "floristeria",
+
   };
 
   const stores_by_group = Object.fromEntries(
