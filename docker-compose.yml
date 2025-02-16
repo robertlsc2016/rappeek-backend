@@ -6,6 +6,6 @@ services:
     container_name: rappeek
     restart: always
     ports:
-      - "${PORT}:${PORT}"
+      - "127.0.0.1:${PORT}:${PORT}"
     env_file:
       - .env
