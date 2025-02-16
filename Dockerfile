@@ -21,8 +21,5 @@ COPY . .
 # Execute o build da aplicação
 RUN npm run build
 
-# Exponha a porta que sua aplicação utiliza
-EXPOSE 3000
-
 # Defina o comando padrão para iniciar a aplicação
 CMD ["npm", "start"]
