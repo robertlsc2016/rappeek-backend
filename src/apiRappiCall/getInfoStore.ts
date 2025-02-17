@@ -1,5 +1,8 @@
 import Axios from "../axios/axiosInstance";
-import { IBodyInfosStoreReturn, IInfosStoreResponse } from "../interfaces/returns/IInfosStore";
+import {
+  IBodyInfosStoreReturn,
+  IInfosStoreResponse,
+} from "../interfaces/returns/IInfosStore";
 
 export const getInfoStore = async ({
   store_id,
@@ -7,17 +10,21 @@ export const getInfoStore = async ({
   store_id: number;
 }): Promise<IBodyInfosStoreReturn> => {
   try {
-    const { data: infosStoreRespose }: { data: IInfosStoreResponse } = await Axios.get(
-      `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${store_id}/`
-    ).catch((err) => {
-      throw {
-        message: "erro ao coletar informacoes da loja com a api do rappi",
-        status: 500,
-        error: err,
-      };
-    });
+    const { data: infosStoreRespose }: { data: IInfosStoreResponse } =
+      await Axios.get(
+        `https://services.rappi.com.br/api/web-gateway/web/stores-router/id/${store_id}/`
+      ).catch((err) => {
+        throw {
+          message: "erro ao coletar informacoes da loja com a api do rappi",
+          status: 500,
+          error: err,
+        };
+      });
 
-    if (infosStoreRespose['error_backend_stores-router-id']?.http_status_code == 404) {
+    if (
+      infosStoreRespose["error_backend_stores-router-id"]?.http_status_code ==
+      404
+    ) {
       throw {
         message: `loja não encontrada na base de dados na api da rappi`,
         status: 400,
@@ -30,8 +37,10 @@ export const getInfoStore = async ({
       name: infosStoreRespose.name,
       store_id: infosStoreRespose.store_id,
 
+      image: infosStoreRespose.store_type.image,
+
       parent_store_type: infosStoreRespose.store_type.store_type_group.group,
-      store_type: infosStoreRespose.store_type.store_type_group.store_type
+      store_type: infosStoreRespose.store_type.store_type_group.store_type,
     };
 
     return filteredStoreInfo;
