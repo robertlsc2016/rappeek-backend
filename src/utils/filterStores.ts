@@ -12,7 +12,7 @@ export const filterStores = async ({ stores }: { stores: any }) => {
         store_id,
         store_name: name,
         store_type: store_type,
-        store_img: image,
+        store_image: image,
         sub_group: sub_group,
         parent_store_type: parent_store_type,
       })
