@@ -32,8 +32,8 @@ describe("Testando API com Supertest e TypeScript", () => {
 
             const responseData: IBodyInfosStoreReturn = res.body;
             // Validações adicionais dependendo da estrutura de IBodyInfosStoreReturn
-            expect(typeof responseData.address).toBe("string"); // Exemplo
-            expect(typeof responseData.name).toBe("string"); // Exemplo
+            expect(typeof responseData.store_address).toBe("string"); // Exemplo
+            expect(typeof responseData.store_name).toBe("string"); // Exemplo
             expect(typeof responseData.parent_store_type).toBe("string"); // Exemplo
             expect(typeof responseData.store_id).toBe("number"); // Exemplo
             expect(typeof responseData.store_type).toBe("string"); // Exemplo
