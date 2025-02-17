@@ -33,11 +33,11 @@ export const getInfoStore = async ({
     }
 
     const filteredStoreInfo: IBodyInfosStoreReturn = {
-      address: infosStoreRespose.address,
-      name: infosStoreRespose.name,
+      store_address: infosStoreRespose.address,
+      store_name: infosStoreRespose.name,
       store_id: infosStoreRespose.store_id,
 
-      image: infosStoreRespose.store_type.image,
+      store_image: infosStoreRespose.store_type.image,
 
       parent_store_type: infosStoreRespose.store_type.store_type_group.group,
       store_type: infosStoreRespose.store_type.store_type_group.store_type,

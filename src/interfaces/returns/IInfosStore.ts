@@ -11,10 +11,10 @@ export interface IInfosStoreResponse {
 }
 
 export interface IBodyInfosStoreReturn {
-  address: string;
-  name: string;
+  store_address: string;
+  store_name: string;
   store_id: string;
-  image: string;
+  store_image: string;
 
   parent_store_type: string;
   store_type: string;
